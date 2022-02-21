@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.february {
+  @apply sm:p-5;
+}
+.february :focus:not(:focus-visible) {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+.february .february-wrapper {
+  @apply md:flex flex-col md:flex-row md:min-h-screen w-full rounded-md bg-white sm:shadow p-3 sm:p-0;
+}
+.february .february-wrapper .february-sidebar {
+  @apply flex flex-col w-full md:w-56 text-slate-700  flex-shrink-0 border-r border-gray-100;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-responsive-handler {
+  @apply sm:hidden mb-4 sm:mb-0 flex-shrink-0 px-2 py-2 flex flex-row items-center justify-between;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-responsive-handler label {
+  @apply text-lg font-semibold tracking-widest text-slate-900 uppercase rounded-lg focus:outline-none;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-responsive-handler button {
+  @apply rounded-lg md:hidden focus:outline-none;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav {
+  @apply sm:flex  flex-grow flex-col pb-4 md:pb-0 md:overflow-y-auto text-sm font-medium tracking-wide;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-item {
+  @apply flex items-center gap-2 mb-0.5 px-4 py-3.5 text-slate-900  transition duration-150 focus:outline-none;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-item:hover, .february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-item.active {
+  @apply bg-slate-100;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-item .february-sidebar-nav-item-icon {
+  @apply transition duration-150;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-item .february-sidebar-nav-item-icon.active {
+  @apply text-teal-600;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-item .february-sidebar-nav-item-icon.inactive {
+  @apply text-gray-300;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-credit {
+  @apply my-4 text-center w-full text-xs text-slate-300 font-normal hover:text-slate-500 transition duration-150;
+}
+.february .february-wrapper .february-content {
+  @apply w-full;
+}
+.february .february-wrapper .february-content .february-content-header {
+  @apply flex items-center pr-2 justify-between first:border-b-2 last:border-t-2 border-slate-50 rounded-r-sm h-12;
+}
+.february .february-wrapper .february-content .february-content-header .february-content-header-title {
+  @apply px-4 flex gap-2 items-center text-slate-700 text-base font-medium tracking-wide;
+}
+.february .february-wrapper .february-content .february-content-header .february-content-header-title .february-content-header-icon {
+  @apply bg-teal-600 p-0.5 flex items-center justify-center rounded-sm text-white;
+}
+.february .february-wrapper .february-content .february-content-header .february-content-header-notice {
+  @apply px-4 flex items-center justify-center text-slate-400 text-xs font-normal tracking-wide;
+}
+.february .february-wrapper .february-content .february-content-body {
+  @apply w-full p-2 sm:py-5 sm:px-5 text-slate-700 text-base no-underline;
+}
+.february .february-tooltip {
+  @apply flex items-center relative;
+}
+.february .february-tooltip .february-tooltip-icon {
+  @apply hover:text-slate-700 scale-75 cursor-pointer;
+}
+.february .february-tooltip .february-tooltip-content {
+  z-index: 9999999 !important;
+  min-width: 200px;
+  max-width: 350px;
+  @apply absolute border inline-block border-slate-100 top-6 sm:top-1/2 sm:left-7 left-1/2 -translate-x-1/2 sm:-translate-x-0 sm:-translate-y-1/2 bg-slate-700 shadow-lg px-3 py-2 rounded-md text-xs text-slate-100;
+}
+.february .february-btn {
+  @apply font-medium cursor-pointer text-sm flex items-center rounded-sm justify-center gap-2 focus:outline-none px-3 py-1.5 bg-teal-600 border-b-2 shadow-sm border-teal-700 text-white hover:opacity-90 transition duration-150 disabled:opacity-50;
+}
+.february .february-btn.danger {
+  @apply bg-red-500 border-red-600;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .february input[type=range]::-webkit-slider-thumb {
+    @apply h-5 w-1 appearance-none cursor-e-resize bg-white rounded-lg;
+    box-shadow: -405px 0 0 400px #0d9488;
+  }
+}
+
+/*# sourceMappingURL=main.css.map */
