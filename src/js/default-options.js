@@ -30,6 +30,9 @@ window.FebruaryData = {
           condition: "",
         },
         {
+          type: "space",          
+        },
+        {
           type: "tab",
           label: "Kire vai",
           id: "name2",

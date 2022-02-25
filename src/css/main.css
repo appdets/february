@@ -42,7 +42,10 @@
   @apply text-gray-300;
 }
 .february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-credit {
-  @apply my-4 text-center w-full text-xs text-slate-300 font-normal hover:text-slate-500 transition duration-150;
+  @apply text-center;
+}
+.february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-credit a {
+  @apply my-4  w-full text-xs text-slate-300 font-normal hover:text-slate-500 transition duration-150;
 }
 .february .february-wrapper .february-content {
   @apply w-full;
@@ -72,13 +75,27 @@
   z-index: 9999999 !important;
   min-width: 200px;
   max-width: 350px;
-  @apply absolute border inline-block border-slate-100 top-6 sm:top-1/2 sm:left-7 left-1/2 -translate-x-1/2 sm:-translate-x-0 sm:-translate-y-1/2 bg-slate-700 shadow-lg px-3 py-2 rounded-md text-xs text-slate-100;
+  background: rgba(30, 41, 59, 0.8);
+  @apply absolute border inline-block border-slate-100 top-6 sm:top-1/2 sm:left-7 left-1/2 -translate-x-1/2 sm:-translate-x-0 sm:-translate-y-1/2  shadow-lg px-3 py-2 rounded-md text-xs text-slate-100;
 }
 .february .february-btn {
   @apply font-medium cursor-pointer text-sm flex items-center rounded-sm justify-center gap-2 focus:outline-none px-3 py-1.5 bg-teal-600 border-b-2 shadow-sm border-teal-700 text-white hover:opacity-90 transition duration-150 disabled:opacity-50;
 }
 .february .february-btn.danger {
   @apply bg-red-500 border-red-600;
+}
+.february input[type=radio] + label span {
+  transition: background 0.2s, transform 0.2s;
+}
+.february input[type=radio] + label:hover {
+  transform: scale(1.2);
+}
+.february input[type=radio]:checked + label span {
+  background-color: #3490DC;
+  box-shadow: 0px 0px 0px 2px white inset;
+}
+.february input[type=radio]:checked + label {
+  color: #3490DC;
 }
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   .february input[type=range]::-webkit-slider-thumb {

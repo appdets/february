@@ -1,4 +1,4 @@
-import {Toast, Loading} from "./helper"
+import { Toast, Loading, build_options } from "./helper";
 
 const February = {
   // state
@@ -14,23 +14,23 @@ const February = {
   get toolSection() {
     return {
       id: "tools",
-      label: "Utility Tools",
+      title: "Utility Tools",
       icon: "dashicons dashicons-admin-tools",
+      submit: false,
     };
   },
 
   get sections() {
     let sections = this.data.sections || [];
     if (
-      this.data.tools &&
+      this.data.enable_tools &&
       !sections.find((section) => section.id === "tools")
     )
       sections.push(this.toolSection);
 
     return sections.map((section) => {
       section.id = section.id || section.label.toLowerCase() || "undefined";
-      section.label =
-        section.label || section.id.toUpperCase() || "Undefined";
+      section.title = section.title || section.id.toUpperCase() || "Undefined";
       section.icon =
         section.icon || section.icon || "dashicons dashicons-admin-generic";
       section.target = section.target || "_top";
@@ -53,13 +53,19 @@ const February = {
     if (this.sections && this.sections.length) return this.sections[0].id;
   },
 
-  get isLoading(){
-    return this.state.settingsExporting || this.state.settingsImporting || this.state.settingsSaving || this.state.settingsLoading || this.state.settingsResetting;
+  get isLoading() {
+    return (
+      this.state.settingsExporting ||
+      this.state.settingsImporting ||
+      this.state.settingsSaving ||
+      this.state.settingsLoading ||
+      this.state.settingsResetting
+    );
   },
 
   // init
   init() {
-    if (typeof FebruaryData === "object") this.data = FebruaryData;
+    if (typeof february_data === "object") this.data = february_data;
 
     window.addEventListener("hashchange", () => {
       this.state.hash = window.location.hash;
@@ -77,18 +83,21 @@ const February = {
   },
 
   initializeForm() {
-    let allFields = {};
+    let fields = {};
 
-    this.sections
-      .filter((section) => section.fields && section.fields.length)
+    fields = this.sections
+      .filter((section) => section.fields)
       .map((section) => section.fields)
-      .forEach((fields) => {
-        fields.forEach((field) => {
-          allFields[field.name] = field.default || field.value || "";
-        });
-      });
+      .reduce((a, b) => a.concat(b), []).filter((field) => !['divider', 'space', 'html', 'message', 'text'].includes(field.type));
 
-    this.fields = allFields;
+    let initializedFields = {};
+    fields.forEach((field) => {
+ 
+        initializedFields[field.id] = field.default || (['multi_checkbox', 'multi_switch'].includes(field.type) ? {} : '');
+       
+    }); 
+
+    this.fields = initializedFields;
   },
 
   isHash(hash = "") {
@@ -96,12 +105,59 @@ const February = {
     return currentHash === hash || (currentHash && currentHash === "#" + hash);
   },
 
+  async resetSection() {
+    this.sectionResetting = true;
+    Toast.fire({
+      title: "Reset to section?",
+      html: `You will lose all your settings of this section and this can not be undone. <br> <strong>Please backup your settings before proceeding.</strong>`,
+      showCancelButton: true,
+      cancelButtonColor: "#aaa",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Reset section",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.state.settingsResetting = true;
+        Loading("Resetting section...");
+        setTimeout(() => {
+          this.state.settingsResetting = false;
+          Toast.fire({
+            toast: true,
+            title: "Section have been reset!",
+            icon: "success",
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+        }, 3000);
+      }
+    });
+  },
+
   async saveOptions() {
-    this.state.saving = true;
-    console.log(this.fields);
+    this.state.settingsSaving = true;
     setTimeout(() => {
-      this.state.saving = false;
-    }, 2000);
+      this.state.settingsSaving = false;
+    }, 4000);
+  },
+
+  logical(condition = null) {
+    // return if condition is not set
+    if (!condition) return true;
+    // replace all variables
+    condition = condition.replace(/\$([a-zA-Z0-9_]+)/g, "this.fields.$1");
+
+    // evaluate condition using eval
+    try {
+      let result = eval(condition);
+      return result;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  build_options(options = []) {
+    return build_options(options);
   },
 
   // tools
@@ -120,18 +176,17 @@ const February = {
   },
   async resetSettings() {
     Toast.fire({
-      icon: "warning",
       title: "Reset to default settings?",
       html: `You will lose all your settings and this can not be undone. <br> <strong>Please backup your settings before proceeding.</strong>`,
       showCancelButton: true,
-      confirmButtonColor: "#0d9488",
-      cancelButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+      confirmButtonColor: "#d33",
       confirmButtonText: "Reset settings",
     }).then((result) => {
       if (result.isConfirmed) {
         Toast.fire({
           title: "Are you sure you want to reset all settings?",
-          
+
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#0d9488",
@@ -140,7 +195,7 @@ const February = {
         }).then((result) => {
           if (result.isConfirmed) {
             this.state.settingsResetting = true;
-            Loading('Loading your settings...') 
+            Loading("Loading your settings...");
             setTimeout(() => {
               this.state.settingsResetting = false;
               Toast.fire({
@@ -150,11 +205,11 @@ const February = {
                 position: "top-end",
                 showConfirmButton: false,
                 timer: 3000,
-                timerProgressBar: true
+                timerProgressBar: true,
               });
             }, 3000);
           }
-        }) 
+        });
       }
     });
   },

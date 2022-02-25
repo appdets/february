@@ -1,16 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-  
 
 .february {
 
-    :focus:not(:focus-visible) {
-        outline: 0 !important;
-        box-shadow: none !important;
-      }
-
   @apply sm:p-5;
+
+  :focus:not(:focus-visible) {
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
 
   .february-wrapper {
     @apply md:flex flex-col md:flex-row md:min-h-screen w-full rounded-md bg-white sm:shadow p-3 sm:p-0;
@@ -51,7 +51,10 @@
         }
 
         .february-sidebar-nav-credit {
-          @apply my-4 text-center w-full text-xs text-slate-300 font-normal hover:text-slate-500 transition duration-150;
+          @apply text-center;
+          a {
+            @apply my-4  w-full text-xs text-slate-300 font-normal hover:text-slate-500 transition duration-150;
+          }
         }
       }
     }
@@ -91,7 +94,8 @@
       z-index: 9999999 !important;
       min-width: 200px;
       max-width: 350px;
-      @apply absolute border inline-block border-slate-100 top-6 sm:top-1/2 sm:left-7 left-1/2 -translate-x-1/2 sm:-translate-x-0 sm:-translate-y-1/2 bg-slate-700 shadow-lg px-3 py-2 rounded-md text-xs text-slate-100;
+      background: rgba(30, 41, 59, 0.8);
+      @apply absolute border inline-block border-slate-100 top-6 sm:top-1/2 sm:left-7 left-1/2 -translate-x-1/2 sm:-translate-x-0 sm:-translate-y-1/2  shadow-lg px-3 py-2 rounded-md text-xs text-slate-100;
     }
   }
   .february-btn {
@@ -101,6 +105,22 @@
       @apply bg-red-500 border-red-600;
     }
   }
+
+  input[type="radio"] + label span {
+    transition: background .2s, transform .2s;
+} 
+input[type="radio"] + label:hover{
+  transform: scale(1.2);
+} 
+
+input[type="radio"]:checked + label span {
+  background-color: #3490DC; //bg-blue
+  box-shadow: 0px 0px 0px 2px white inset;
+}
+
+input[type="radio"]:checked + label{
+   color: #3490DC; //text-blue
+}
 
   @media screen and (-webkit-min-device-pixel-ratio: 0) {
     input[type="range"]::-webkit-slider-thumb {
