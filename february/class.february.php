@@ -15,6 +15,35 @@ if (!class_exists('February')) {
                         'condition' => '',
                 );
 
+
+
+                function sanitize_inputs($inputs = [])
+                {
+                        if (is_array($inputs)) {
+                                foreach ($inputs as $key => $value) {
+                                        $inputs[$key] = sanitize_text_field($value);
+                                }
+                        }
+                        return $inputs;
+                }
+
+                function inputs()
+                {
+                        try {
+                                $json = file_get_contents('php://input');
+                                $request = json_decode(sanitize_text_field($json));
+                        } catch (\Exception $e) {
+                        }
+
+                        if (!$request || empty($request)) {
+                                $request =  $_REQUEST;
+                        }
+
+                        $request = $this->sanitize_inputs($request);
+
+                        return (object) $request;
+                }
+
                 public function input_fields()
                 {
                         return apply_filters('february_fields', ['text', 'textarea', 'checkbox', 'multi_checkbox', 'tab', 'switch', 'multi_switch', 'radio', 'select', 'number', 'email', 'url', 'password', 'color', 'date', 'time', 'range', 'media', 'editor', 'repeater', 'css', 'js']);
@@ -31,25 +60,26 @@ if (!class_exists('February')) {
                 {
                         $this->reset_options();
                         add_action('wp_ajax_february_save_options', array($this, 'ajax_february_save_options'));
-                        add_action('wp_ajax_nopriv_february_save_options', array($this, 'ajax_february_save_options'));
+                        add_action('wp_ajax_february_reset_options', array($this, 'ajax_february_reset_options'));
                         add_action('admin_menu', array($this, 'add_menu_page'));
                         add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
                 }
 
-                function sanitize_fields($fields = []){
-                        
-                        $sanitized_fields = [];
-                        foreach ($fields as $field) {
-                                $sanitized_fields[] = $this->sanitize_fields($field);
-                        }
-                        return $sanitized_fields;
+                function ajax_february_save_options()
+                {
+                        $inputs = $this->inputs();
+
+                        $this->save_options($inputs->options);
+
+                        wp_send_json_success($inputs->options);
+                        wp_die();
                 }
 
-                function february_save_options(){
-                        $nonce = sanitize_text_field(  $_POST['nonce'] ?? '' );
-                        $fields = $this->sanitize_fields($_POST['fields']);
-
-                        wp_send_json( $fields );
+                function ajax_february_reset_options()
+                {
+                        $this->reset_options();
+                        wp_send_json_success();
+                        wp_die();
                 }
 
                 public function get_id()
@@ -85,26 +115,45 @@ if (!class_exists('February')) {
                 public function reset_options()
                 {
                         $id = $this->get_id();
+                        $requested_id = $this->inputs()->id ?? '';
+
+                        if ($requested_id !== $id) {
+                                return;
+                        }
 
                         $fields =  $this->field_default_values();
- 
+
                         foreach ($fields as $field) {
-                                add_option($id . '_' . $field['id'], $field['default']); 
-                        }  
+                                add_option($id . '_' . $field['id'], $field['default']);
+                        }
+                }
+
+                public function save_options($options = [])
+                {
+                        $id = $this->get_id();
+                        $requested_id = $this->inputs()->id ?? '';
+
+                        if ($requested_id !== $id) {
+                                return;
+                        }
+
+                        foreach ($options as $key => $value) {
+                                update_option($id . '_' . $key, $value);
+                        }
                 }
 
                 public function get_options($id)
                 {
                         global $wpdb;
-                        $sql = "SELECT * FROM {$wpdb->prefix}options WHERE `option_name` LIKE '{$id}%'";
+                        $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}options WHERE `option_name` LIKE '{$id}%'");
                         $rows = $wpdb->get_results($sql);
                         if ($rows) {
 
-                                $options = new stdClass();
+                                $options = [];
 
                                 foreach ($rows as $row) {
                                         $option_name = str_replace($id . '_', '', $row->option_name);
-                                        $options->{$option_name} = maybe_unserialize( $row->option_value );
+                                        $options[$option_name] = maybe_unserialize($row->option_value);
                                 }
 
                                 return $options;
@@ -148,18 +197,18 @@ if (!class_exists('February')) {
                 function getOptionScript()
                 {
                         $sections = array_map(function ($section) {
-                                $fields = array_map(function($field){
-                                        if(isset($field['type']) && in_array($field['type'], $this->input_fields())){                                               
+                                $fields = array_map(function ($field) {
+                                        if (isset($field['type']) && in_array($field['type'], $this->input_fields())) {
                                                 $value = get_option($this->get_id() . '_' . $field['id']);
-                                                $field['value'] = in_array($field['type'], ['switch', 'checkbox'] ) ? (bool) $value : $value;
+                                                $field['value'] = in_array($field['type'], ['switch', 'checkbox']) ? (bool) $value : $value;
                                         }
                                         return $field;
                                 }, $section['fields']);
                                 $section['fields'] = $fields;
                                 return $section;
                         }, $this->options['sections']);
-                        
-                        
+
+
                         $this->options['sections'] = $sections;
                         return $this->options;
                 }
@@ -167,7 +216,7 @@ if (!class_exists('February')) {
                 function localize_script()
                 {
 
-                        $script = $this->getOptionScript(); 
+                        $script = $this->getOptionScript();
                         $script['ajax_url'] = admin_url('admin-ajax.php');
                         $script['nonce'] = wp_create_nonce('february_nonce');
                         $script['input_fields'] = $this->input_fields();

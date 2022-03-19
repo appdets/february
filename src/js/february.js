@@ -1,4 +1,4 @@
-import { Toast, Loading, build_options } from "./helper"; 
+import { Toast, Loading, build_options } from "./helper";
 
 const February = {
   // state
@@ -110,6 +110,28 @@ const February = {
     this.fields = initializedFields;
   },
 
+  initializeDefaultValues() {
+    let fields = {};
+
+    fields = this.sections
+
+      .filter((section) => section.fields)
+      .map((section) => section.fields)
+      .reduce((a, b) => a.concat(b), [])
+      .filter((field) =>
+        Object.values(this.data.input_fields).includes(field.type)
+      );
+
+    let initializedFields = {};
+    fields.forEach((field) => {
+      initializedFields[field.id] =
+        field.default ||
+        (["multi_checkbox", "multi_switch"].includes(field.type) ? {} : "");
+    });
+
+    this.fields = initializedFields;
+  },
+
   isHash(hash = "") {
     let currentHash = this.state.hash;
     return currentHash === hash || (currentHash && currentHash === "#" + hash);
@@ -124,43 +146,97 @@ const February = {
       cancelButtonColor: "#aaa",
       confirmButtonColor: "#d33",
       confirmButtonText: "Reset section",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         this.state.settingsResetting = true;
         Loading("Resetting section...");
-        setTimeout(() => {
+        console.log(this.section);
+
+        this.section.fields.forEach((field) => {
+          this.fields[field.id] =
+            field.default ||
+            (["multi_checkbox", "multi_switch"].includes(field.type) ? {} : "");
+        });
+
+        let data = {
+          nonce: this.data.nonce,
+          options: this.fields,
+          id: this.data.id,
+          action: "february_save_options",
+        };
+ 
+        
+        let response = await fetch(
+          this.data.ajax_url + "?action=february_save_options",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+    
+        response = await response.json();
+    
+        console.log(response);
+    
+        if (response.success) {
           this.state.settingsResetting = false;
           Toast.fire({
             toast: true,
-            title: "Section have been reset!",
+            title: "Section has been reset!",
             icon: "success",
             position: "top-end",
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
           });
-        }, 3000);
+        } else {
+          this.state.settingsResetting = false;
+          Toast.fire({
+            toast: true,
+    
+            title: "Something went wrong!",
+            icon: "error",
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+        }
+        
+
       }
     });
   },
 
   async saveOptions() {
     this.state.settingsSaving = true;
- 
-    let data = { 
+
+    let data = {
       nonce: this.data.nonce,
       options: this.fields,
-      action: "february_save_options",   
+      id: this.data.id,
+      action: "february_save_options",
     };
+ 
+    let response = await fetch(
+      this.data.ajax_url + "?action=february_save_options",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
-    console.log(data, this.data.ajax_url);
-    // Loading("Saving settings...");
-    let response = await fetch(this.data.ajax_url + '?action=february_save_options', {
-      method: "POST", 
-      body: JSON.stringify(data),
-    });
+    response = await response.json();
 
-    if (response.status === 200) {
+    console.log(response);
+
+    if (response.success) {
       this.state.settingsSaving = false;
       Toast.fire({
         toast: true,
@@ -203,7 +279,7 @@ const February = {
 
   build_options(options = []) {
     return build_options(options);
-  }, 
+  },
   // tools
 
   async importSettings(event) {
@@ -271,17 +347,19 @@ const February = {
       encodeURIComponent(JSON.stringify(formatedValues));
     var downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", february_data.id + "-options.json");
+    downloadAnchorNode.setAttribute(
+      "download",
+      february_data.id + "-options.json"
+    );
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
     this.state.settingsExporting = false;
   },
-  async copySettings(){
-    
-    let fields = this.fields
-    // copy field to clipboard using browser navigator 
-    document.querySelector('#february-export-textarea').select();
+  async copySettings() {
+    let fields = this.fields;
+    // copy field to clipboard using browser navigator
+    document.querySelector("#february-export-textarea").select();
     navigator.clipboard.writeText(JSON.stringify(fields));
     Toast.fire({
       toast: true,
@@ -292,31 +370,22 @@ const February = {
       timer: 3000,
       timerProgressBar: true,
     });
-    
-
   },
-  async pasteSettings(){
-    
+  async pasteSettings() {
     // paste field from clipboard using browser navigator
     let text = await navigator.clipboard.readText();
- 
 
     try {
       let isJSON = JSON.parse(text);
-      if(isJSON && text){
-        this.state.setting_data = text 
-        this.importFromTextarea()
+      if (isJSON && text) {
+        this.state.setting_data = text;
+        this.importFromTextarea();
       }
-      
     } catch (e) {
-       
       return;
     }
-
-    
- 
   },
-  async importFromTextarea(){
+  async importFromTextarea() {
     try {
       let data = JSON.parse(this.state.setting_data);
       // confirm swal
@@ -333,7 +402,7 @@ const February = {
           await this.saveOptions();
 
           this.state.settingsImporting = false;
-          this.state.setting_data = ''
+          this.state.setting_data = "";
 
           Toast.fire({
             toast: true,
@@ -362,7 +431,7 @@ const February = {
       cancelButtonColor: "#aaa",
       confirmButtonColor: "#d33",
       confirmButtonText: "Reset options",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         Toast.fire({
           title: "Are you sure you want to reset all options?",
@@ -373,22 +442,61 @@ const February = {
           cancelButtonColor: "#aaa",
           confirmButtonColor: "#d33",
           confirmButtonText: "Yes, reset it!",
-        }).then((result) => {
+        }).then(async (result) => {
           if (result.isConfirmed) {
             this.state.settingsResetting = true;
             Loading("Resetting...");
-            setTimeout(() => {
+            
+            this.initializeDefaultValues(); 
+
+            let data = {
+              nonce: this.data.nonce,
+              id: this.data.id,
+              options: this.fields,
+              action: "february_save_options",
+            };
+
+            console.log(data);
+         
+            let response = await fetch(
+              this.data.ajax_url + "?action=february_save_options",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: JSON.stringify(data),
+              }
+            );
+        
+            response = await response.json();
+        
+            console.log(response);
+        
+            if (response.success) {
               this.state.settingsResetting = false;
               Toast.fire({
                 toast: true,
-                title: "Options have been reset!",
+                title: "Settings have been reset!",
                 icon: "success",
                 position: "top-end",
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
               });
-            }, 3000);
+            } else {
+              this.state.settingsResetting = false;
+              Toast.fire({
+                toast: true,
+        
+                title: "Something went wrong!",
+                icon: "error",
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+              });
+            }
           }
         });
       }
