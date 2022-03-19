@@ -308,12 +308,17 @@
                                                          You can Export all the options of <span class="font-medium" x-text="data.title"></span>
                                                          as re-usable JSON file or copy to clipboard.
                                                          <div class="my-2">
-                                                                 <textarea placeholder="Paste your options here" class="february-editor w-full form-textarea bg-slate-100 border-none ring-1 ring-slate-200 focus:ring-slate-400 focus:bg-white rounded-sm text-sm transition duration-150 text-slate-600" rows="4"  readonly x-model="JSONSettings"></textarea>
+                                                                 <textarea @click.prevent="copySettings" id="february-export-textarea" placeholder="Your options here" class="february-editor w-full form-textarea bg-slate-100 border-none ring-1 ring-slate-200 focus:ring-slate-400 focus:bg-white rounded-sm text-sm transition duration-150 text-slate-600" rows="4" readonly x-model="JSONSettings"></textarea>
                                                          </div>
                                                          <div class="mt-2 flex items-center gap-2">
 
-                                                                 <button @click.prevent="copySettings" class="february-btn"> <?php echo __('Copy to Clipboard', 'february'); ?></button>
-                                                                 <button @click.prevent="exportSettings" class="february-btn"> <?php echo __('Export as JSON', 'february'); ?></button>
+                                                                 <button @click.prevent="copySettings" class="february-btn"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z"/>
+</svg> <?php echo __('Copy', 'february'); ?></button>
+                                                                 <button @click.prevent="exportSettings" class="february-btn"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+  <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+  <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+</svg> <?php echo __('Download', 'february'); ?></button>
                                                          </div>
                                                  </div>
 
@@ -327,11 +332,11 @@
                                                          through <span x-text="data.title"></span> Tool only. Importing a configuration will
                                                          overwrite the existing options. Sometimes it may break your site. Do at your risk.
                                                          <div class="my-2">
-                                                                 <textarea placeholder="Paste your options here" class="february-editor w-full form-textarea bg-slate-100 border-none ring-1 ring-slate-200 focus:ring-slate-400 focus:bg-white rounded-sm text-sm transition duration-150 text-slate-600" rows="4" x-model="state.setting_data"></textarea>
+                                                                 <textarea id="february-import-textarea" @click.prevent="pasteSettings" placeholder="Paste your options here" class="february-editor w-full form-textarea bg-slate-100 border-none ring-1 ring-slate-200 focus:ring-slate-400 focus:bg-white rounded-sm text-sm transition duration-150 text-slate-600" rows="4" x-model="state.setting_data"></textarea>
                                                          </div>
                                                          <div class="mt-2 flex items-center gap-2">
-                                                                 <button :class="{'opacity-50 pointer-events-none' : !state.setting_data}" @click.prevent="copySettings" class="february-btn"> <?php echo __('Import from Textarea', 'february'); ?></button>
-                                                                 <label for="february_import" class="february-btn"> <?php echo __('Import from JSON', 'february'); ?></label>
+                                                                 <button :class="{'opacity-50 pointer-events-none' : !state.setting_data}" @click.prevent="importFromTextarea" class="february-btn"> <?php echo __('Import Options', 'february'); ?></button>
+                                                                 <label for="february_import" class="february-btn"> <?php echo __('Upload JSON', 'february'); ?></label>
                                                                  <input id="february_import" type="file" class="hidden peer" @input="importSettings" accept=".json">
 
                                                          </div>
@@ -342,11 +347,11 @@
                                                  <h2 class="font-medium text-base tracking-wide mb-2"><?php echo __('Reset Options', 'february'); ?></h2>
 
                                                  <div class="text-slate-500 text-sm">
-                                                         You can Reset all the options for <span class="font-medium" x-text="data.label"></span>. It will revert to default settings and remove all the
+                                                         You can Reset all the options for <span class="font-medium" x-text="data.title"></span>. It will revert to default settings and remove all the
                                                          customizations you made later. Make sure you have have exported the options before
                                                          resetting.
                                                          <div class="mt-2 flex items-center gap-2">
-                                                                <button class="february-btn danger" @click.prevent="resetSettings" :disabled="state.settingsResetting == true"><?php echo __('Reset to default', 'february'); ?> </button>                                                                
+                                                                 <button class="february-btn danger" @click.prevent="resetSettings" :disabled="state.settingsResetting == true"><?php echo __('Reset to default', 'february'); ?> </button>
                                                          </div>
                                                  </div>
                                          </section>

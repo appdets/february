@@ -119,7 +119,7 @@ const February = {
     this.sectionResetting = true;
     Toast.fire({
       title: "Reset to section?",
-      html: `You will lose all your settings of this section and this can not be undone. <br> <strong>Please backup your settings before proceeding.</strong>`,
+      html: `You will lose all your options of this section and this can not be undone. <br> <strong>Please backup your options before proceeding.</strong>`,
       showCancelButton: true,
       cancelButtonColor: "#aaa",
       confirmButtonColor: "#d33",
@@ -277,18 +277,95 @@ const February = {
     downloadAnchorNode.remove();
     this.state.settingsExporting = false;
   },
+  async copySettings(){
+    
+    let fields = this.fields
+    // copy field to clipboard using browser navigator 
+    document.querySelector('#february-export-textarea').select();
+    navigator.clipboard.writeText(JSON.stringify(fields));
+    Toast.fire({
+      toast: true,
+      title: "Copied to clipboard!",
+      icon: "success",
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    
+
+  },
+  async pasteSettings(){
+    
+    // paste field from clipboard using browser navigator
+    let text = await navigator.clipboard.readText();
+ 
+
+    try {
+      let isJSON = JSON.parse(text);
+      if(isJSON && text){
+        this.state.setting_data = text 
+        this.importFromTextarea()
+      }
+      
+    } catch (e) {
+       
+      return;
+    }
+
+    
+ 
+  },
+  async importFromTextarea(){
+    try {
+      let data = JSON.parse(this.state.setting_data);
+      // confirm swal
+      Toast.fire({
+        title: "Import settings?",
+        html: `You will lose all your settings and this can not be undone. <br> <strong>Please backup your settings before proceeding.</strong>`,
+        showCancelButton: true,
+        confirmButtonText: "Import settings",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          this.state.settingsImporting = true;
+
+          this.fields = data;
+          await this.saveOptions();
+
+          this.state.settingsImporting = false;
+          this.state.setting_data = ''
+
+          Toast.fire({
+            toast: true,
+            title: "Options have been imported!",
+            icon: "success",
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+        }
+      });
+    } catch (e) {
+      Toast.fire({
+        icon: "error",
+        title: "Invalid options!",
+      });
+      return;
+    }
+  },
   async resetSettings() {
     Toast.fire({
-      title: "Reset to default settings?",
-      html: `You will lose all your settings and this can not be undone. <br> <strong>Please backup your settings before proceeding.</strong>`,
+      title: "Reset to default options?",
+      html: `You will lose all your options and this can not be undone. <br> <strong>Please backup your options before proceeding.</strong>`,
       showCancelButton: true,
       cancelButtonColor: "#aaa",
       confirmButtonColor: "#d33",
-      confirmButtonText: "Reset settings",
+      confirmButtonText: "Reset options",
     }).then((result) => {
       if (result.isConfirmed) {
         Toast.fire({
-          title: "Are you sure you want to reset all settings?",
+          title: "Are you sure you want to reset all options?",
 
           icon: "warning",
           showCancelButton: true,
@@ -304,7 +381,7 @@ const February = {
               this.state.settingsResetting = false;
               Toast.fire({
                 toast: true,
-                title: "Settings have been reset!",
+                title: "Options have been reset!",
                 icon: "success",
                 position: "top-end",
                 showConfirmButton: false,
