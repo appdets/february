@@ -15,6 +15,11 @@ if (!class_exists('February')) {
                         'condition' => '',
                 );
 
+                public function input_fields()
+                {
+                        return apply_filters('february_fields', ['text', 'textarea', 'checkbox', 'multi_checkbox', 'tab', 'switch', 'multi_switch', 'radio', 'select', 'number', 'email', 'url', 'password', 'color', 'date', 'time', 'range', 'media', 'editor', 'repeater', 'css', 'js']);
+                }
+
                 static public function create($options = array())
                 {
                         $instance = new self();
@@ -24,9 +29,96 @@ if (!class_exists('February')) {
 
                 public function init_options()
                 {
+                        $this->reset_options();
+                        add_action('wp_ajax_february_save_options', array($this, 'ajax_february_save_options'));
+                        add_action('wp_ajax_nopriv_february_save_options', array($this, 'ajax_february_save_options'));
                         add_action('admin_menu', array($this, 'add_menu_page'));
                         add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
                 }
+
+                function sanitize_fields($fields = []){
+                        
+                        $sanitized_fields = [];
+                        foreach ($fields as $field) {
+                                $sanitized_fields[] = $this->sanitize_fields($field);
+                        }
+                        return $sanitized_fields;
+                }
+
+                function february_save_options(){
+                        $nonce = sanitize_text_field(  $_POST['nonce'] ?? '' );
+                        $fields = $this->sanitize_fields($_POST['fields']);
+
+                        wp_send_json( $fields );
+                }
+
+                public function get_id()
+                {
+                        return $this->options && isset($this->options['id']) ? $this->options['id'] : sanitize_title($this->options['menu_title']);
+                }
+
+                public function field_default_values()
+                {
+                        $sections = array_filter($this->options['sections'], function ($item) {
+                                return isset($item['fields']) && is_array($item['fields']);
+                        });
+
+                        $section_fields = array_reduce($sections, function ($carry, $item) {
+                                return array_merge($carry, $item['fields']);
+                        }, []);
+
+                        $fields = array_filter($section_fields, function ($item) {
+                                return isset($item['id']) && isset($item['type']) && in_array($item['type'], $this->input_fields());
+                        });
+
+                        // default fields 
+                        $default_fields = array_map(function ($item) {
+                                return [
+                                        'id' => $item['id'],
+                                        'default' => isset($item['default']) ? $item['default'] : '',
+                                ];
+                        }, $fields);
+
+                        return $default_fields;
+                }
+
+                public function reset_options()
+                {
+                        $id = $this->get_id();
+
+                        $fields =  $this->field_default_values();
+ 
+                        foreach ($fields as $field) {
+                                add_option($id . '_' . $field['id'], $field['default']); 
+                        }  
+                }
+
+                public function get_options($id)
+                {
+                        global $wpdb;
+                        $sql = "SELECT * FROM {$wpdb->prefix}options WHERE `option_name` LIKE '{$id}%'";
+                        $rows = $wpdb->get_results($sql);
+                        if ($rows) {
+
+                                $options = new stdClass();
+
+                                foreach ($rows as $row) {
+                                        $option_name = str_replace($id . '_', '', $row->option_name);
+                                        $options->{$option_name} = maybe_unserialize( $row->option_value );
+                                }
+
+                                return $options;
+                        } else {
+                                return false;
+                        }
+                }
+
+                public static function get_field($name, $id = 'option')
+                {
+                        $value = get_option($id . '_' . $name);
+                        return $value;
+                }
+
 
                 public function add_menu_page()
                 {
@@ -53,17 +145,32 @@ if (!class_exists('February')) {
                         add_filter('admin_footer_text', array($this, 'filter_footer'));
                 }
 
-                function getOptionScript () {
+                function getOptionScript()
+                {
+                        $sections = array_map(function ($section) {
+                                $fields = array_map(function($field){
+                                        if(isset($field['type']) && in_array($field['type'], $this->input_fields())){                                               
+                                                $value = get_option($this->get_id() . '_' . $field['id']);
+                                                $field['value'] = in_array($field['type'], ['switch', 'checkbox'] ) ? (bool) $value : $value;
+                                        }
+                                        return $field;
+                                }, $section['fields']);
+                                $section['fields'] = $fields;
+                                return $section;
+                        }, $this->options['sections']);
+                        
+                        
+                        $this->options['sections'] = $sections;
                         return $this->options;
                 }
 
                 function localize_script()
                 {
 
-                        $script = $this->getOptionScript();
-
+                        $script = $this->getOptionScript(); 
                         $script['ajax_url'] = admin_url('admin-ajax.php');
                         $script['nonce'] = wp_create_nonce('february_nonce');
+                        $script['input_fields'] = $this->input_fields();
 
                         return $script;
                 }

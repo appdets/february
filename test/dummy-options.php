@@ -16,6 +16,7 @@ $options = [
     'save' => 'Save Options',
     'saving' => 'Saving...',
     'divider' => 1,
+    'conditional_hide' => false,
 
     'sections' => [
         [
@@ -37,10 +38,7 @@ $options = [
                     'class' => '',
                     'attributes' => '',
                     'required' => true,
-                ],
-                // [
-                //     'type' => 'divider'
-                // ],
+                ],                 
                 [
                     'id' => 'textarea',
                     'type' => 'textarea',
@@ -67,8 +65,8 @@ $options = [
                     'type' => 'radio',
                     'label' => 'Radio',
                     'description' => 'A simple radio field.',
-                    'default' => 'option-1',
-                    'inline' => false,
+                    'default' => 'option-2',
+                    'inline' => 1,
                     'options' => [
                         'option-1' => 'Option 1',
                         'option-2' => 'Option 2',
@@ -81,8 +79,72 @@ $options = [
                     'label' => 'Select',
                     'placeholder' => 'Select an option',
                     'description' => 'A simple select field.',
-                    'default' => '',
+                    'default' => 'center',
                     'hints' => 'lorem ipsum dolor sit amet',
+                    'options' => [
+                        [
+                            'icon' => 'dashicons dashicons-align-left',
+                            'value' => 'left',
+                            'label' => 'Left',
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-center',
+                            'value' => 'center',
+                            'label' => 'Center',
+
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-right',
+                            'value' => 'right',
+                            'label' => 'Right',
+
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-none',
+                            'value' => 'none',
+                            'label' => 'None',
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-none',
+                            'value' => 'none',
+                            'label' => 'None',
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-none',
+                            'value' => 'none',
+                            'label' => 'None',
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-none',
+                            'value' => 'none',
+                            'label' => 'None',
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-none',
+                            'value' => 'none',
+                            'label' => 'None',
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-none',
+                            'value' => 'none',
+                            'label' => 'None',
+                        ],
+                    ],
+                ],
+                [
+                    'id' => 'range',
+                    'type' => 'range',
+                    'label' => 'Select',
+                    'description' => 'A simple select field.',
+                    'default' => '20', 
+                ],
+                [
+                    'id' => 'tab',
+                    'type' => 'tab',
+                    'label' => 'Tab',
+                    'description' => 'A simple tab field.',
+                    'default' => 'center',
+                    'hide_label' => true,
                     'options' => [
                         [
                             'icon' => 'dashicons dashicons-align-left',
@@ -109,18 +171,42 @@ $options = [
                     ],
                 ],
                 [
-                    'id' => 'range',
-                    'type' => 'range',
-                    'label' => 'Select',
-                    'description' => 'A simple select field.',
-                    'default' => '20', 
+                    'id' => 'multi_switch',
+                    'type' => 'multi_switch',
+                    'label' => 'Multi Switch',
+                    'description' => 'A simple multi switch.',
+                    'default' => ['center', 'right'],
+                    'options' => [
+                        [
+                            'icon' => 'dashicons dashicons-align-left',
+                            'value' => 'left',
+                            'label' => 'Left',
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-center',
+                            'value' => 'center',
+                            'label' => 'Center',
+
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-right',
+                            'value' => 'right',
+                            'label' => 'Right',
+
+                        ],
+                        [
+                            'icon' => 'dashicons dashicons-align-none',
+                            'value' => 'none',
+                            'label' => 'None',
+                        ],
+                    ],
                 ],
                 [
-                    'id' => 'tab',
-                    'type' => 'multi_switch',
-                    'label' => 'Tab',
-                    'description' => 'A simple tab field.',
-                    'default' => '',
+                    'id' => 'multi_checkbox',
+                    'type' => 'multi_checkbox',
+                    'label' => 'Multi Checkbox',
+                    'description' => 'A simple  multi checkbox.',
+                    'default' => ['center', 'right'],
                     'options' => [
                         [
                             'icon' => 'dashicons dashicons-align-left',
@@ -174,12 +260,23 @@ $options = [
             'description' => 'A simple options page with a few options.', 
             'submit' => false,
             'fields' => [
-                // html field 
+                // message field 
                 [
-                    'id' => 'html',
+                    'id' => 'message',
                     'type' => 'message',
                     'text' => 'A simple message field.',
                     'default' => '',
+                ],
+                [
+                    'id' => 'html',
+                    'type' => 'html',
+                    'html' => 'A simple html field.',
+                    'default' => '',
+                ],
+                [
+                    'id' => 'md',
+                    'type' => 'md',
+                    'md' => "Simple Markdown Field \n\n- [x] Hello \n - [x] Hello  \n - [x] Hello  \n - [x] Hello", 
                 ],
             ],
         ],

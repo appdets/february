@@ -84,7 +84,7 @@
                                                                  </div>
                                                          </template>
 
-                                                         <template x-if="logical(field.condition)">
+                                                         <template x-if="logical(field.condition) || 1">
                                                                  <div class="w-full flex flex-col gap-2 p-0.5">
 
                                                                          <!-- inputs -->
@@ -122,8 +122,8 @@
                                                                                                          </div>
                                                                                                  </template>
                                                                                                  <template x-if="!field.selectDropdown">
-                                                                                                         <div class="bg-white p-1 flex border border-gray-200 rounded">
-                                                                                                                 <button class="p-1 px-2 z-0 outline-none w-full text-gray-800 text-sm text-left" @click="field.selectDropdown = !field.selectDropdown" @click.away="field.selectDropdown = false">
+                                                                                                         <div class="bg-white py-1 flex border border-gray-200 rounded">
+                                                                                                                 <button class="py-1 m-0 px-2 z-0 outline-none w-full text-gray-800 text-sm text-left" @click="field.selectDropdown = !field.selectDropdown">
                                                                                                                          <template x-if="field.options && build_options(field.options).find(opt => opt.value == fields[field.id]) && build_options(field.options).find(opt => opt.value == fields[field.id]).icon">
                                                                                                                                  <span :class="build_options(field.options).find(opt => opt.value == fields[field.id]).icon"></span>
                                                                                                                          </template>
@@ -142,7 +142,7 @@
                                                                                                  <div class="absolute shadow-lg top-full z-50 w-full lef-0 rounded max-h-52 scrollbar-thin scrollbar-thumb-teal-700 scrollbar-track-gray-100 overflow-y-auto text-sm">
                                                                                                          <div class="flex flex-col w-full">
                                                                                                                  <template x-for="option in build_options(field.options)">
-                                                                                                                         <div x-show="!field.search ? true : (option.label.toLowerCase().includes(field.search.toLowerCase()) || option.value.toLowerCase().includes(field.search.toLowerCase()))" @click="fields[field.id] = option.value;  field.selectDropdown = false; field.search = ''" class="cursor-pointer w-full border-gray-100 rounded-t border-b hover:bg-teal-100">
+                                                                                                                         <div x-show="!field.search ? true : (option.label.toLowerCase().includes(field.search.toLowerCase()) || option.value.toLowerCase().includes(field.search.toLowerCase()))" @click="fields[field.id] = option.value;  field.selectDropdown = false; field.search = ''" class="cursor-pointer w-full mb-0 border-t border-slate-100">
                                                                                                                                  <div x-show="field.search ? false : true" class="flex w-full items-center p-2 pl-2 border-transparent  border-l-4 relative hover:bg-slate-100" :class="[option.value === fields[field.id] ? 'border-teal-600 bg-slate-100' : 'bg-white']">
                                                                                                                                          <span x-show="option.icon" :class="option.icon"></span>
                                                                                                                                          <div class="w-full items-center flex" x-show="option.label">
@@ -252,14 +252,14 @@
                                                                                  <textarea :placeholder="field.placeholder" :rows="field.rows || 2" :required="field.required" :class="[field.disabled ? 'opacity-70' : '', field.class]" :readonly="field.readonly || false" :disabled="field.disabled || false" x-model="fields[field.id]" class="february-editor w-full form-textarea bg-slate-100 border-none ring-1 ring-slate-200 focus:ring-slate-400 focus:bg-white rounded-sm text-sm transition duration-150 text-slate-600"></textarea>
                                                                          </template>
 
-                                                                         <!-- button group  -->
-                                                                         <template x-if="['tab'].includes(field.type)">
+                                                                         <!-- button group / tab  -->
+                                                                         <template x-if="['tab', 'button_group'].includes(field.type)">
                                                                                  <div :class="[field.disabled ? 'opacity-70' : '', field.class]">
                                                                                          <div class="inline-flex shadow-sm rounded-md ">
                                                                                                  <template x-for="option in build_options(field.options)">
                                                                                                          <button x-show="option.value" type="button" :title="option.label" class="border  border-t border-b last:rounded-r-sm border-r-0 last:border-r border-gray-200 first:rounded-l-sm  px-2 py-1.5  flex items-center gap-1 justify-center" :class="[fields[field.id] == option.value ? 'bg-teal-600 text-white' : 'bg-white text-slate-700 hover:bg-gray-100 hover:text-teal-700']" @click.prevent="fields[field.id] = option.value">
                                                                                                                  <span x-show="option.icon" class="transform" :class="[option.icon, option.label ? 'scale-90' : '']"></span>
-                                                                                                                 <span class="text-sm font-medium text-center" x-show="option.label && option.label != 0" x-text="option.label"></span>
+                                                                                                                 <span class="text-sm font-medium text-center" x-show="option.label && option.label != 0 && field.hide_label !== true" x-text="option.label"></span>
                                                                                                          </button>
 
                                                                                                  </template>
@@ -277,7 +277,6 @@
                                                                          <template x-if="['html'].includes(field.type)">
                                                                                  <div x-show="field.html || field.message || field.text" x-html="field.html || field.message || field.text"></div>
                                                                          </template>
-
 
                                                                          <!-- divider  -->
                                                                          <template x-if="['divider'].includes(field.type)">
@@ -303,42 +302,51 @@
                                  <!-- Utility Tools -->
                                  <template x-if="data.enable_tools && section && section.id === 'tools'">
                                          <section>
-                                                 <h2 class="font-medium text-base tracking-wide mb-2">Export Settings</h2>
+                                                 <h2 class="font-medium text-base tracking-wide mb-2"><?php echo __('Export Options', 'february'); ?></h2>
 
                                                  <div class="text-slate-500 text-sm">
-                                                         You can Export all the settings of <span class="font-medium" x-text="data.label"></span>
-                                                         as re-usable JSON file.
+                                                         You can Export all the options of <span class="font-medium" x-text="data.title"></span>
+                                                         as re-usable JSON file or copy to clipboard.
+                                                         <div class="my-2">
+                                                                 <textarea placeholder="Paste your options here" class="february-editor w-full form-textarea bg-slate-100 border-none ring-1 ring-slate-200 focus:ring-slate-400 focus:bg-white rounded-sm text-sm transition duration-150 text-slate-600" rows="4"  readonly x-model="JSONSettings"></textarea>
+                                                         </div>
                                                          <div class="mt-2 flex items-center gap-2">
-                                                                 <button @click.prevent="exportSettings" class="february-btn"> Export
-                                                                         JSON</button>
+
+                                                                 <button @click.prevent="copySettings" class="february-btn"> <?php echo __('Copy to Clipboard', 'february'); ?></button>
+                                                                 <button @click.prevent="exportSettings" class="february-btn"> <?php echo __('Export as JSON', 'february'); ?></button>
                                                          </div>
                                                  </div>
 
                                                  <div class="border-b border-slate-100 my-6"></div>
 
 
-                                                 <h2 class="font-medium text-base tracking-wide mb-2">Import Settings</h2>
+                                                 <h2 class="font-medium text-base tracking-wide mb-2"><?php echo __('Import Options', 'february'); ?></h2>
 
                                                  <div class="text-slate-500 text-sm mb-6">
-                                                         You can Import all the settings for <span class="font-medium" x-text="data.label"></span> from JSON file. Make sure, the JSON file generated
-                                                         through <span x-text="data.label"></span> Tool only. Importing a configuration will
-                                                         overwrite the existing settings. Sometimes it may break your site. Do at your risk.
+                                                         You can Import all the options for <span class="font-medium" x-text="data.title"></span> from JSON file or from Clipboard. Make sure, the JSON file generated
+                                                         through <span x-text="data.title"></span> Tool only. Importing a configuration will
+                                                         overwrite the existing options. Sometimes it may break your site. Do at your risk.
+                                                         <div class="my-2">
+                                                                 <textarea placeholder="Paste your options here" class="february-editor w-full form-textarea bg-slate-100 border-none ring-1 ring-slate-200 focus:ring-slate-400 focus:bg-white rounded-sm text-sm transition duration-150 text-slate-600" rows="4" x-model="state.setting_data"></textarea>
+                                                         </div>
                                                          <div class="mt-2 flex items-center gap-2">
-                                                                 <button class="february-btn" @click.prevent="importSettings"> Import
-                                                                         JSON </button>
+                                                                 <button :class="{'opacity-50 pointer-events-none' : !state.setting_data}" @click.prevent="copySettings" class="february-btn"> <?php echo __('Import from Textarea', 'february'); ?></button>
+                                                                 <label for="february_import" class="february-btn"> <?php echo __('Import from JSON', 'february'); ?></label>
+                                                                 <input id="february_import" type="file" class="hidden peer" @input="importSettings" accept=".json">
+
                                                          </div>
                                                  </div>
 
                                                  <div class="border-b border-slate-100 my-6"></div>
 
-                                                 <h2 class="font-medium text-base tracking-wide mb-2">Reset Settings</h2>
+                                                 <h2 class="font-medium text-base tracking-wide mb-2"><?php echo __('Reset Options', 'february'); ?></h2>
 
                                                  <div class="text-slate-500 text-sm">
-                                                         You can Reset all the settings for <span class="font-medium" x-text="data.label"></span>. It will revert to default settings and remove all the
-                                                         customizations you made later. Make sure you have have exported the settings before
+                                                         You can Reset all the options for <span class="font-medium" x-text="data.label"></span>. It will revert to default settings and remove all the
+                                                         customizations you made later. Make sure you have have exported the options before
                                                          resetting.
                                                          <div class="mt-2 flex items-center gap-2">
-                                                                 <button class="february-btn danger" @click.prevent="resetSettings" :disabled="state.settingsResetting == true"> <span x-show="state.settingsResetting" class="bg-white w-3 h-3 border-r-4  border-slate-500 rounded-full animate-spin"></span> <span x-html="state.settingsResetting ? 'Resetting..' : 'Reset Settings'"></span> </button>
+                                                                <button class="february-btn danger" @click.prevent="resetSettings" :disabled="state.settingsResetting == true"><?php echo __('Reset to default', 'february'); ?> </button>                                                                
                                                          </div>
                                                  </div>
                                          </section>
@@ -356,7 +364,7 @@
                                  <div>
                                          <button @click.prevent="saveOptions" :disabled="state.saving == true" class="february-btn">
                                                  <span class="dashicons" :class="[state.saving ? 'dashicons-update animate-spin' : 'dashicons-saved']"></span>
-                                                 <span x-text="state.saving ? (data.saving || 'Saving...') : (data.save || 'Save Settings')"></span>
+                                                 <span x-text="state.saving ? (data.saving || 'Saving...') : (data.save || 'Save Options')"></span>
                                          </button>
                                  </div>
                          </div>
@@ -365,7 +373,6 @@
          </div>
 
  </div>
-
 
 
  <style>

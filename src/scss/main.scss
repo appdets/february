@@ -51,6 +51,7 @@
         }
 
         .february-sidebar-nav-credit {
+          @apply my-2;
           @apply text-center;
           a {
             @apply my-4  w-full text-xs text-slate-300 font-normal hover:text-slate-500 transition duration-150;

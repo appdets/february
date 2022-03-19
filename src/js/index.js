@@ -1,8 +1,5 @@
 import Alpine from "alpinejs";
-import February from "./february";
-
-import "./default-options";
-
+import February from "./february"; 
 // console.log(february_data);
 
 // start alpine js

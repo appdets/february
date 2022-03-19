@@ -42,6 +42,7 @@
   @apply text-gray-300;
 }
 .february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-credit {
+  @apply my-2;
   @apply text-center;
 }
 .february .february-wrapper .february-sidebar .february-sidebar-nav .february-sidebar-nav-credit a {
