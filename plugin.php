@@ -5,7 +5,7 @@
  * plugin URI: http://www.appdets.com/february-framework
  * description: A tiny minimal robust WordPress Option Framework made with TailwindCSS and Alpine.js
  * version: 1.0.0
- * author: appdets
+ * author: Appdets
  * author URI: http://www.appdets.com
  * license: GPLv2 or later
  * text domain: february 

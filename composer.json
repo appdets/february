@@ -1,0 +1,13 @@
+{
+    "name": "appdets/february",
+    "description": "A tiny minimal robust WordPress Option Framework made with TailwindCSS and Alpine.js",
+    "type": "wp-framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jafran Hasan",
+            "email": "exjafran@gmail.com"
+        }
+    ],
+    "require": {}
+}
