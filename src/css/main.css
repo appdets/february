@@ -66,6 +66,12 @@
 .february .february-wrapper .february-content .february-content-body {
   @apply w-full p-2 sm:py-5 sm:px-5 text-slate-700 text-base no-underline;
 }
+.february .february-wrapper .form-input {
+  @apply bg-white shadow-sm focus:shadow focus:bg-white transition duration-150 rounded-sm max-w-full border-none ring-slate-200  ring-1 focus:ring-slate-400 placeholder-slate-500 py-2 px-3 focus:border-transparent text-sm;
+}
+.february .february-wrapper .form-input.textarea {
+  @apply p-2;
+}
 .february .february-tooltip {
   @apply flex items-center relative;
 }

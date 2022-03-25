@@ -8,6 +8,7 @@ if (!class_exists('February')) {
 
                 public $options = array();
 
+                # Default options
                 protected $default_options = array(
                         'id' => '',
                         'title' => '',
@@ -15,8 +16,7 @@ if (!class_exists('February')) {
                         'condition' => '',
                 );
 
-
-
+                # Sanitizer
                 function sanitize_inputs($inputs = [])
                 {
                         if (is_array($inputs)) {
@@ -27,6 +27,7 @@ if (!class_exists('February')) {
                         return $inputs;
                 }
 
+                # Get requested inputs
                 function inputs()
                 {
                         try {
@@ -44,28 +45,32 @@ if (!class_exists('February')) {
                         return (object) $request;
                 }
 
+                # Input fields
                 public function input_fields()
                 {
                         return apply_filters('february_fields', ['text', 'textarea', 'checkbox', 'multi_checkbox', 'tab', 'switch', 'multi_switch', 'radio', 'select', 'number', 'email', 'url', 'password', 'color', 'date', 'time', 'range', 'media', 'editor', 'repeater', 'css', 'js']);
                 }
 
+                # Initialize
                 static public function create($options = array())
                 {
                         $instance = new self();
                         $instance->options = $options;
-                        $instance->init_options();
+                        $instance->init_hooks();
                 }
 
-                public function init_options()
+                #  Register hooks
+                public function init_hooks()
                 {
-                        $this->reset_options();
-                        add_action('wp_ajax_february_save_options', array($this, 'ajax_february_save_options'));
-                        add_action('wp_ajax_february_reset_options', array($this, 'ajax_february_reset_options'));
+                        add_action('init', [$this, 'reset_options']);
+                        add_action('wp_ajax_february_save_options', array($this, 'ajax_save_options'));
+                        add_action('wp_ajax_february_reset_options', array($this, 'ajax_reset_options'));
                         add_action('admin_menu', array($this, 'add_menu_page'));
                         add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
                 }
 
-                function ajax_february_save_options()
+                # Ajax handler for saving options
+                function ajax_save_options()
                 {
                         $inputs = $this->inputs();
 
@@ -75,18 +80,21 @@ if (!class_exists('February')) {
                         wp_die();
                 }
 
-                function ajax_february_reset_options()
+                # Ajax handler for resetting options
+                function ajax_reset_options()
                 {
                         $this->reset_options();
                         wp_send_json_success();
                         wp_die();
                 }
 
+                # Get id
                 public function get_id()
                 {
                         return $this->options && isset($this->options['id']) ? $this->options['id'] : sanitize_title($this->options['menu_title']);
                 }
 
+                # Get field defaults
                 public function field_default_values()
                 {
                         $sections = array_filter($this->options['sections'], function ($item) {
@@ -112,6 +120,7 @@ if (!class_exists('February')) {
                         return $default_fields;
                 }
 
+                # Reset options
                 public function reset_options()
                 {
                         $id = $this->get_id();
@@ -128,6 +137,7 @@ if (!class_exists('February')) {
                         }
                 }
 
+                # Save options
                 public function save_options($options = [])
                 {
                         $id = $this->get_id();
@@ -142,8 +152,11 @@ if (!class_exists('February')) {
                         }
                 }
 
-                public function get_options($id)
+                # Get options
+                public function get_options($id = null)
                 {
+                        $id = $id ?? $this->get_id();
+
                         global $wpdb;
                         $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}options WHERE `option_name` LIKE '{$id}%'");
                         $rows = $wpdb->get_results($sql);
@@ -162,38 +175,40 @@ if (!class_exists('February')) {
                         }
                 }
 
+                # Get field
                 public static function get_field($name, $id = 'option')
                 {
                         $value = get_option($id . '_' . $name);
                         return $value;
                 }
 
-
+                # Add menu page
                 public function add_menu_page()
                 {
-                        add_menu_page(
-                                $this->options['menu_title'] ?? 'February Options',
-                                $this->options['menu_title'] ?? 'February Options',
-                                $this->options['capability'] ?? 'manage_options',
-                                $this->options['menu_slug'] ?? sanitize_title($this->options['menu_title']) ?? 'february-options',
-                                array($this, 'render_menu_page'),
-                                $this->options['icon_url'] ?? 'dashicons-admin-generic',
-                                $this->options['position'] ?? null
-                        );
+                        if (!$this->options) {
+                                return;
+                        }
+
+                        if (isset($this->options['parent_menu']) && $this->options['parent_menu']) {
+                                add_submenu_page($this->options['parent_menu'], $this->options['menu_title'], $this->options['menu_title'], $this->options['capability'], $this->options['menu_slug'], array($this, 'render_page'));
+                        } else {
+                                add_menu_page($this->options['menu_title'], $this->options['menu_title'], $this->options['capability'], $this->options['menu_slug'], array($this, 'render_page'), $this->options['icon_url'], $this->options['position']);
+                        }
                 }
 
-                public function render_menu_page()
+                # Render page
+                public function render_page()
                 {
-                        // enqueue localize scripts
+                        # enqueue localize scripts
                         add_filter('february_localize_script', array($this, 'localize_script'), 0);
 
                         $this->render_body();
 
-                        // filter footer 
-
+                        # filter footer 
                         add_filter('admin_footer_text', array($this, 'filter_footer'));
                 }
 
+                # Get object scripts
                 function getOptionScript()
                 {
                         $sections = array_map(function ($section) {
@@ -213,6 +228,7 @@ if (!class_exists('February')) {
                         return $this->options;
                 }
 
+                # Localize script
                 function localize_script()
                 {
 
@@ -224,19 +240,26 @@ if (!class_exists('February')) {
                         return $script;
                 }
 
+                # Filter footer
                 function filter_footer()
                 {
                         echo __('<span id="footer-thankyou">Thank you for choosing <a href="https://wordpress.org/plugins/february-framework/" target="_blank">February Framework</a>.</span>');
                 }
 
+                # Render body
                 public function render_body()
                 {
-                        if (file_exists(__DIR__ . '/menu-page.php')) include_once  __DIR__ . '/menu-page.php';
+                        if (file_exists(__DIR__ . '/february-template.php')) include_once  __DIR__ . '/february-template.php';
                 }
 
-                function enqueue_scripts($hook)
+                # Enqueue scripts
+                function enqueue_scripts()
                 {
-                        if ($hook != 'toplevel_page_' . $this->options['menu_slug']) return false;
+
+                        $page = $_GET['page'] ?? '';
+
+
+                        if ($page != $this->options['menu_slug']) return false;
 
                         wp_register_script('february_data', '');
                         wp_localize_script('february_data', 'february_data', $this->localize_script());
@@ -246,6 +269,7 @@ if (!class_exists('February')) {
                         wp_enqueue_script('february-script', plugins_url('february.min.js', __FILE__));
                 }
 
+                # Render field
                 function render_field($field)
                 {
                         $value = get_option($field['id']);

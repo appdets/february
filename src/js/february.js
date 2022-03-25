@@ -49,7 +49,7 @@ const February = {
   },
 
   get defaultSection() {
-    if (this.data.default) return this.data.default;
+    if (this.data.default_section) return this.data.default_section;
     if (this.sections && this.sections.length) return this.sections[0].id;
   },
 
@@ -164,8 +164,7 @@ const February = {
           id: this.data.id,
           action: "february_save_options",
         };
- 
-        
+
         let response = await fetch(
           this.data.ajax_url + "?action=february_save_options",
           {
@@ -176,11 +175,11 @@ const February = {
             body: JSON.stringify(data),
           }
         );
-    
+
         response = await response.json();
-    
+
         console.log(response);
-    
+
         if (response.success) {
           this.state.settingsResetting = false;
           Toast.fire({
@@ -196,7 +195,7 @@ const February = {
           this.state.settingsResetting = false;
           Toast.fire({
             toast: true,
-    
+
             title: "Something went wrong!",
             icon: "error",
             position: "top-end",
@@ -205,8 +204,6 @@ const February = {
             timerProgressBar: true,
           });
         }
-        
-
       }
     });
   },
@@ -220,7 +217,7 @@ const February = {
       id: this.data.id,
       action: "february_save_options",
     };
- 
+
     let response = await fetch(
       this.data.ajax_url + "?action=february_save_options",
       {
@@ -279,8 +276,7 @@ const February = {
 
   build_options(options = []) {
     return build_options(options);
-  },
-  // tools
+  }, 
 
   async importSettings(event) {
     // read file from event
@@ -446,8 +442,8 @@ const February = {
           if (result.isConfirmed) {
             this.state.settingsResetting = true;
             Loading("Resetting...");
-            
-            this.initializeDefaultValues(); 
+
+            this.initializeDefaultValues();
 
             let data = {
               nonce: this.data.nonce,
@@ -457,7 +453,7 @@ const February = {
             };
 
             console.log(data);
-         
+
             let response = await fetch(
               this.data.ajax_url + "?action=february_save_options",
               {
@@ -468,11 +464,11 @@ const February = {
                 body: JSON.stringify(data),
               }
             );
-        
+
             response = await response.json();
-        
+
             console.log(response);
-        
+
             if (response.success) {
               this.state.settingsResetting = false;
               Toast.fire({
@@ -488,7 +484,7 @@ const February = {
               this.state.settingsResetting = false;
               Toast.fire({
                 toast: true,
-        
+
                 title: "Something went wrong!",
                 icon: "error",
                 position: "top-end",

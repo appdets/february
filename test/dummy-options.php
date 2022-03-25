@@ -1,27 +1,34 @@
 <?php
 
+# Dummy options
+
 $options = [
-    'id' => 'february-options',
+
+    # wp defaults 
+    'id' => 'february-options', 
     'menu_title' => 'February Demo',
     'menu_slug' => 'february-options',
     'capability' => 'manage_options',
     'icon_url' => 'dashicons-buddicons-replies',
     'position' => null,
 
+    # february option page 
     'title' => 'February Options',
     'description' => 'A simple options page with a few options.',
 
-    'default_section' => false,
+    # february behaviors 
+    'default_section' => null,
     "enable_tools" => true,
     'save' => 'Save Options',
     'saving' => 'Saving...',
     'divider' => 1,
     'conditional_hide' => false,
 
+    # sections
     'sections' => [
         [
             'id' => 'inputs',
-            'title' => 'Input Fields',
+            'title' => 'Basic Fields',
             'description' => 'A simple options page with a few options.',
             'condition' => '',
             'fields' => [
@@ -134,7 +141,7 @@ $options = [
                 [
                     'id' => 'range',
                     'type' => 'range',
-                    'label' => 'Select',
+                    'label' => 'Range',
                     'description' => 'A simple select field.',
                     'default' => '20', 
                 ],
@@ -283,5 +290,9 @@ $options = [
     ],
 
 ];
+
+/**
+ * Initialize the options before anything else.
+ */
 
 February::create($options);
