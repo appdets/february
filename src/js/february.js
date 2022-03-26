@@ -14,7 +14,7 @@ const February = {
   get toolSection() {
     return {
       id: "tools",
-      title: "Utility Tools",
+      title: this.data.tools_label || "Utility Tools",
       icon: "dashicons dashicons-admin-tools",
       submit: false,
     };
@@ -23,7 +23,7 @@ const February = {
   get sections() {
     let sections = this.data.sections || [];
     if (
-      this.data.enable_tools &&
+      this.data.tools != false &&
       !sections.find((section) => section.id === "tools")
     )
       sections.push(this.toolSection);
@@ -259,7 +259,7 @@ const February = {
     }
   },
 
-  logical(condition = null) {
+  conditional(condition = null) {
     // return if condition is not set
     if (!condition) return true;
     // replace all variables
@@ -274,9 +274,19 @@ const February = {
     }
   },
 
+  conditional_hide(condition = null) {
+    if (this.data.conditional_hide == false) return true;
+    return this.conditional(condition);
+  },
+
+  conditional_fade(condition = null) {
+    if (this.data.conditional_hide == true) return false;
+    return !this.conditional(condition);
+  },
+
   build_options(options = []) {
     return build_options(options);
-  }, 
+  },
 
   async importSettings(event) {
     // read file from event

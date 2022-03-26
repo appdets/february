@@ -26,7 +26,7 @@
 
                                  <!-- menu item  -->
                                  <template x-for="section in sections">
-                                         <a x-show="logical(section.condition)" @click="state.open = !state.open" class="february-sidebar-nav-item" :href="section.url ? section.url : '#' + section.id" :class="{ 'active' : isHash(section.id)  }" :target="section.target">
+                                         <a x-show="conditional_hide(section.condition)" @click="state.open = !state.open" class="february-sidebar-nav-item" :href="section.url ? section.url : '#' + section.id" :class="{ 'active' : isHash(section.id)  }" :target="section.target">
                                                  <i class="february-sidebar-nav-item-icon" :class="[section.icon, isHash(section.id) ? 'active' : 'inactive']"></i>
                                                  <span x-html="section.title"></span>
                                          </a>
@@ -64,10 +64,10 @@
 
                                 <!-- section fields  -->
                                  <template x-show="section && section.fields && section.fields.length && !isHash('tools')" x-for="field in section.fields">
-                                         <template x-if="logical(field.condition)">
-                                                 <div class="flex items-start gap-2 flex-col sm:flex-row mb-4" :class="{ 'pb-4 border-b-2 last:border-none border-dashed border-slate-100' : data.divider }">
+                                         <template x-if="conditional_hide(field.condition)">
+                                                 <div class="flex items-start gap-2 flex-col sm:flex-row mb-4 transition duration-150" :class="{ 'pb-4 border-b-2 last:border-none border-dashed border-slate-100' : data.divider, 'opacity-40 pointer-events-none' : conditional_fade(field.condition) }">
 
-                                                         <template x-if="!section.full && !['divider', 'space'].includes(field.type) && logical(field.condition)">
+                                                         <template x-if="!section.full && !['divider', 'space'].includes(field.type) && conditional_hide(field.condition)">
                                                                  <div class="sm:w-1/4 w-full flex items-center gap-1 ">
                                                                          <label x-show="field.label" :for="'february_field_' + field.id" class="font-medium text-sm text-slate-700 cursor-pointer flex items-center gap-2">
                                                                                  <span x-text="field.label"></span>
@@ -92,7 +92,7 @@
                                                                  </div>
                                                          </template>
 
-                                                         <div x-show="logical(field.condition) || 1" x-transition class="w-full flex flex-col gap-2 p-0.5">
+                                                         <div x-show="conditional_hide(field.condition) || 1" x-transition class="w-full flex flex-col gap-2 p-0.5">
 
                                                                  <!-- inputs -->
                                                                  <template x-if="['text', 'email', 'password', 'datetime-local', 'date', 'number', 'month', 'search', 'tel', 'time', 'url', 'week'].includes(field.type)">
@@ -275,6 +275,11 @@
                                                                          <div x-show="field.html || field.message || field.text" :class="[field.class]" class="text-sm text-slate-600 bg-slate-100 p-3 rounded-md" x-text="field.html || field.message || field.text"></div>
                                                                  </template>
 
+                                                                 <!-- nohtml  -->
+                                                                 <template x-if="['nohtml'].includes(field.type)">
+                                                                         <div x-show="field.html || field.message || field.text || field.nohtml" x-text="field.html || field.message || field.text || field.nohtml"></div>
+                                                                 </template>
+
                                                                  <!-- html  -->
                                                                  <template x-if="['html'].includes(field.type)">
                                                                          <div x-show="field.html || field.message || field.text" x-html="field.html || field.message || field.text"></div>
@@ -301,7 +306,7 @@
                                  </template>
 
                                  <!-- Utility Tools -->
-                                 <template x-if="data.enable_tools && section && section.id === 'tools'">
+                                 <template x-if="data.tools != false && section && section.id === 'tools'">
                                          <section>
                                                  <h2 class="font-medium text-base tracking-wide mb-2"><?php echo __('Export Options', 'february'); ?></h2>
 

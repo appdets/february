@@ -18,8 +18,9 @@ $options = [
 
     # february behaviors 
     'default_section' => null,
-    "enable_tools" => true,
-    'save' => 'Save Options',
+    "tools" => false,
+    "tools_label" => 'Tools',
+    'save' => 'Save Settings',
     'saving' => 'Saving...',
     'divider' => 1,
     'conditional_hide' => false,
@@ -27,8 +28,8 @@ $options = [
     # sections
     'sections' => [
         [
-            'id' => 'inputs',
-            'title' => 'Basic Fields',
+            'id' => 'basic',
+            'title' => 'Basic',
             'description' => 'A simple options page with a few options.',
             'condition' => '',
             'fields' => [
@@ -260,8 +261,8 @@ $options = [
         ],
         // about section 
         [
-            'id' => 'about',
-            'title' => 'About February',
+            'id' => 'markup',
+            'title' => 'Markup',
             'full' => true,
             'icon' => 'dashicons dashicons-info',
             'description' => 'A simple options page with a few options.', 
@@ -275,16 +276,22 @@ $options = [
                     'default' => '',
                 ],
                 [
-                    'id' => 'html',
-                    'type' => 'html',
-                    'html' => 'A simple html field.',
+                    'id' => 'nohtml',
+                    'type' => 'nohtml',
+                    'text' => '<a href="#">A simple nohtml field that doesn\'t render HTML.</a>',
                     'default' => '',
                 ],
                 [
-                    'id' => 'md',
-                    'type' => 'md',
-                    'md' => "Simple Markdown Field \n\n- [x] Hello \n - [x] Hello  \n - [x] Hello  \n - [x] Hello", 
-                ],
+                    'id' => 'html',
+                    'type' => 'html',
+                    'html' => 'A simple html field. <em><strong>Renders HTML syntax</strong></em>',
+                    'default' => '',
+                ], 
+                [
+                    'id' => 'code',
+                    'type' => 'html',
+                    'html' => '<h2>Simple HTML code that embeds YouTube videos</h2><br><iframe width="100%" height="360" src="https://www.youtube.com/embed/_f-qkGJBPts" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+                ]
             ],
         ],
     ],
