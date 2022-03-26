@@ -62,12 +62,12 @@
                          <!-- section content -->
                          <div class="february-content-body">
 
-                                <!-- section fields  -->
+                                 <!-- section fields  -->
                                  <template x-show="section && section.fields && section.fields.length && !isHash('tools')" x-for="field in section.fields">
-                                         <template x-if="conditional_hide(field.condition)">
-                                                 <div class="flex items-start gap-2 flex-col sm:flex-row mb-4 transition duration-150" :class="{ 'pb-4 border-b-2 last:border-none border-dashed border-slate-100' : data.divider, 'opacity-40 pointer-events-none' : conditional_fade(field.condition) }">
+                                         <template x-if="conditional_hide(field.show)">
+                                                 <div class="flex items-start gap-2 flex-col sm:flex-row mb-4 transition duration-150" :class="{ 'pb-4 border-b-2 last:border-none border-dashed border-slate-100' : data.divider, 'opacity-40 pointer-events-none' : conditional_fade(field.not) }">
 
-                                                         <template x-if="!section.full && !['divider', 'space'].includes(field.type) && conditional_hide(field.condition)">
+                                                         <template x-if="!section.full && !['divider', 'space'].includes(field.type) && conditional_hide(field.show)">
                                                                  <div class="sm:w-1/4 w-full flex items-center gap-1 ">
                                                                          <label x-show="field.label" :for="'february_field_' + field.id" class="font-medium text-sm text-slate-700 cursor-pointer flex items-center gap-2">
                                                                                  <span x-text="field.label"></span>
@@ -92,7 +92,7 @@
                                                                  </div>
                                                          </template>
 
-                                                         <div x-show="conditional_hide(field.condition) || 1" x-transition class="w-full flex flex-col gap-2 p-0.5">
+                                                         <div x-show="conditional_hide(field.show) || 1" x-transition class="w-full flex flex-col gap-2 p-0.5">
 
                                                                  <!-- inputs -->
                                                                  <template x-if="['text', 'email', 'password', 'datetime-local', 'date', 'number', 'month', 'search', 'tel', 'time', 'url', 'week'].includes(field.type)">
@@ -178,15 +178,17 @@
 
                                                                  <!-- checkbox -->
                                                                  <template x-if="['checkbox'].includes(field.type)">
-                                                                         <label class="flex items-center gap-1.5 rounded-md">
-                                                                                 <input x-model="fields[field.id]" :name="'february_field_' + field.id" :name="'february_field_' + field.id" type="checkbox" class="hidden peer" />
-                                                                                 <span class="w-4 h-4 rounded-sm bg-slate-200 peer-checked:bg-teal-600 text-transparent peer-checked:text-white transition duration-150 flex items-center justify-center">
-                                                                                         <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-2.5" viewBox="0 0 24 24">
-                                                                                                 <path d="M0 11.386l1.17-1.206c1.951.522 5.313 1.731 8.33 3.597 3.175-4.177 9.582-9.398 13.456-11.777l1.044 1.073-14 18.927-10-10.614z" />
-                                                                                         </svg>
-                                                                                 </span>
-                                                                                 <span x-show="field.label" x-text="field.label" class="text-sm"></span>
-                                                                         </label>
+                                                                         <div>
+                                                                                 <label class="inline-flex items-center gap-1.5 rounded-md w-auto">
+                                                                                         <input x-model="fields[field.id]" :name="'february_field_' + field.id" :name="'february_field_' + field.id" type="checkbox" class="hidden peer" />
+                                                                                         <span class="w-4 h-4 rounded-sm bg-slate-200 peer-checked:bg-teal-600 text-transparent peer-checked:text-white transition duration-150 flex items-center justify-center">
+                                                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-2.5" viewBox="0 0 24 24">
+                                                                                                         <path d="M0 11.386l1.17-1.206c1.951.522 5.313 1.731 8.33 3.597 3.175-4.177 9.582-9.398 13.456-11.777l1.044 1.073-14 18.927-10-10.614z" />
+                                                                                                 </svg>
+                                                                                         </span>
+                                                                                         <span x-show="field.label" x-text="field.label" class="text-sm"></span>
+                                                                                 </label>
+                                                                         </div>
                                                                  </template>
 
                                                                  <!-- multiple checkbox -->

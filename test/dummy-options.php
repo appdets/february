@@ -5,7 +5,7 @@
 $options = [
 
     # wp defaults 
-    'id' => 'february-options', 
+    'id' => 'february-options',
     'menu_title' => 'February Demo',
     'menu_slug' => 'february-options',
     'capability' => 'manage_options',
@@ -18,8 +18,8 @@ $options = [
 
     # february behaviors 
     'default_section' => null,
-    "tools" => false,
-    "tools_label" => 'Tools',
+    "tools" => 1,
+    "tools_label" => 'Utility Tools',
     'save' => 'Save Settings',
     'saving' => 'Saving...',
     'divider' => 1,
@@ -27,11 +27,12 @@ $options = [
 
     # sections
     'sections' => [
+        # Basic field section
         [
             'id' => 'basic',
-            'title' => 'Basic',
+            'title' => 'Basic Fields',
             'description' => 'A simple options page with a few options.',
-            'condition' => '',
+            'show' => '',
             'fields' => [
                 [
                     'id' => 'text',
@@ -41,12 +42,12 @@ $options = [
                     'default' => '',
                     'placeholder' => 'Enter text',
                     'default' => 'Name',
-                    'condition' => '',
+                    'show' => '',
                     'validate' => '',
                     'class' => '',
                     'attributes' => '',
                     'required' => true,
-                ],                 
+                ],
                 [
                     'id' => 'textarea',
                     'type' => 'textarea',
@@ -55,7 +56,7 @@ $options = [
                     'default' => '',
                     'placeholder' => 'Enter text',
                     'rows' => 3,
-                    'condition' => '$radio == "option-1" && $checkbox',
+                    'not' => '$radio == "option-1" && $checkbox',
                     'attributes' => [
                         'foo' => 'bar',
                     ],
@@ -144,7 +145,14 @@ $options = [
                     'type' => 'range',
                     'label' => 'Range',
                     'description' => 'A simple select field.',
-                    'default' => '20', 
+                    'default' => '20',
+                ],
+                [
+                    'id' => 'image',
+                    'type' => 'image',
+                    'label' => 'image',
+                    'description' => 'A simple image field.',
+                    'default' => '',
                 ],
                 [
                     'id' => 'tab',
@@ -242,30 +250,20 @@ $options = [
                 ],
                 [
                     'type' => 'message',
-                    'message' => 'This is left',
-                    'condition' => '$tab == "left"',
-                ],                
-                [
-                    'type' => 'message',
                     'message' => 'This is center',
-                    'condition' => '$tab == "center"',
+                    'show' => '$tab == "center"',
                 ],
-                [
-                    'type' => 'message',
-                    'message' => 'This is right',
-                    'condition' => '$tab == "right"',
-                ],
-                
+
 
             ],
         ],
-        // about section 
+        # Markup section
         [
             'id' => 'markup',
-            'title' => 'Markup',
+            'title' => 'Markup Fields',
             'full' => true,
-            'icon' => 'dashicons dashicons-info',
-            'description' => 'A simple options page with a few options.', 
+            'icon' => 'dashicons dashicons-editor-code',
+            'description' => 'A simple options page with a few options.',
             'submit' => false,
             'fields' => [
                 // message field 
@@ -286,7 +284,7 @@ $options = [
                     'type' => 'html',
                     'html' => 'A simple html field. <em><strong>Renders HTML syntax</strong></em>',
                     'default' => '',
-                ], 
+                ],
                 [
                     'id' => 'code',
                     'type' => 'html',
@@ -294,6 +292,23 @@ $options = [
                 ]
             ],
         ],
+        # About section 
+        [
+            'id' => 'about',
+            'title' => 'About February',
+            'full' => true,
+            'icon' => 'dashicons dashicons-info',
+            'submit' => false,
+            'fields' => [
+                // message field 
+                [
+                    'id' => 'about-february',
+                    'type' => 'message',
+                    'text' => 'A tiny minimal robust WordPress Option Framework made with TailwindCSS and Alpine.js',
+                    'default' => '',
+                ],
+            ]
+        ]
     ],
 
 ];
@@ -303,3 +318,42 @@ $options = [
  */
 
 February::create($options);
+
+
+
+
+
+# Simple getting saved data
+
+/**
+ * All fields data
+ */
+
+# OOP 
+/**
+ * @id string
+ * The same ID you used in the options array
+ */
+$data = February::get_options('february-options'); // return all the data
+
+# Works same
+$data = fget_options('february-options');
+
+
+
+
+
+/**
+ * Single field data
+ */
+
+# OOP 
+/**
+ * @name string
+ * @id string
+ * The same IDs you used in the options array 
+ */
+$field = February::get_option('text', 'february-options'); // return single field data
+ 
+# Works same
+$data = fget_option('text', 'february-options');

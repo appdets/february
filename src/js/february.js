@@ -274,13 +274,11 @@ const February = {
     }
   },
 
-  conditional_hide(condition = null) {
-    if (this.data.conditional_hide == false) return true;
+  conditional_hide(condition = null) { 
     return this.conditional(condition);
   },
 
-  conditional_fade(condition = null) {
-    if (this.data.conditional_hide == true) return false;
+  conditional_fade(condition = null) { 
     return !this.conditional(condition);
   },
 

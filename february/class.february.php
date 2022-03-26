@@ -153,9 +153,9 @@ if (!class_exists('February')) {
                 }
 
                 # Get options
-                public function get_options($id = null)
+                public static function get_options($id = null)
                 {
-                        $id = $id ?? $this->get_id();
+                        $id = $id ?? (new self)->get_id();
 
                         global $wpdb;
                         $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}options WHERE `option_name` LIKE '{$id}%'");
@@ -164,8 +164,8 @@ if (!class_exists('February')) {
 
                                 $options = [];
 
-                                foreach ($rows as $row) {
-                                        $option_name = str_replace($id . '_', '', $row->option_name);
+                                foreach ($rows as $row) { 
+                                        $option_name = str_replace($id . '_', '', $row->option_name); 
                                         $options[$option_name] = maybe_unserialize($row->option_value);
                                 }
 
@@ -175,8 +175,8 @@ if (!class_exists('February')) {
                         }
                 }
 
-                # Get field
-                public static function get_field($name, $id = 'option')
+                # Get option
+                public static function get_option($name, $id = 'option')
                 {
                         $value = get_option($id . '_' . $name);
                         return $value;
@@ -210,7 +210,7 @@ if (!class_exists('February')) {
 
                 # Get object scripts
                 function getOptionScript()
-                {
+                { 
                         $sections = array_map(function ($section) {
                                 $fields = array_map(function ($field) {
                                         if (isset($field['type']) && in_array($field['type'], $this->input_fields())) {
@@ -279,3 +279,25 @@ if (!class_exists('February')) {
                 }
         }
 }
+
+
+
+# Additional functions
+
+
+# February get option
+if(!function_exists('fget_option')) {
+        function fget_option($name, $id = 'option')
+        {
+                return February::get_option($name, $id);
+        }
+}
+
+# February get options 
+if(!function_exists('fget_options')) {
+        function fget_options($id = 'option')
+        {
+                return February::get_options($id);
+        }
+}
+
