@@ -297,10 +297,54 @@
                                                                          <div class="my-2"></div>
                                                                  </template>
 
+                                                                 <!-- image -->
+                                                                 <template x-if="['image'].includes(field.type)">
+                                                                         <div class="w-full flex items-center gap-2" :class="[field.disabled ? 'opacity-70' : '', field.class]">
+                                                                                 <!-- multiple   -->
+                                                                                 <template v-if="fields[field.id] && field.multiple == true" x-for="(attachment, index) in fields[field.id]">
+                                                                                         <div class="w-16 h-16 border border-slate-100 shadow-sm rounded-md relative p-2">
+                                                                                                 <img x-show="attachment" x-transition :src="attachment.url" class="w-full">
+                                                                                                 <div class="absolute top-0 left-0 w-full h-full overflow-hidden flex items-center justify-center">
+                                                                                                         <button @click.prevent="fields[field.id] = fields[field.id].filter((attachIndex) => attachIndex != index)" class="w-6 h-6 bg-red-400 opacity-0 hover:opacity-100 rounded-md flex items-center justify-center text-xs text-gray-600 hover:text-white p-0 m-0">
+                                                                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-6" viewBox="0 0 16 16">
+                                                                                                                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                                                                                 </svg>
+                                                                                                         </button>
+
+                                                                                                 </div>
+                                                                                         </div>
+                                                                                 </template>
+
+                                                                                 <!-- single image  -->
+                                                                                 <template v-if="fields[field.id] && field.multiple != true">
+                                                                                         <div class="w-16 h-16 border border-slate-100 shadow-sm rounded-md relative p-2">
+                                                                                                 <img x-show="fields[field]" x-transition :src="fields[field].url" class="w-full">
+                                                                                                 <div class="absolute top-0 left-0 w-full h-full overflow-hidden flex items-center justify-center">
+                                                                                                         <button @click.prevent="fields[field.id] = {}" class="w-6 h-6 bg-red-400 opacity-0 hover:opacity-100 rounded-md flex items-center justify-center text-xs text-gray-600 hover:text-white p-0 m-0">
+                                                                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-6" viewBox="0 0 16 16">
+                                                                                                                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                                                                                 </svg>
+                                                                                                         </button>
+
+
+                                                                                                 </div>
+                                                                                         </div>
+                                                                                 </template>
+
+                                                                                 <template x-if="!fields[field.id] || field.multiple == true">
+                                                                                         <button @click="upload_image(field, field.multiple)" class="w-16 h-16 border border-slate-100 shadow-sm rounded-md relative flex items-center justify-center text-xs text-gray-400 hover:text-slate-600 p-0 m-0">
+                                                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-current w-6" viewBox="0 0 16 16">
+                                                                                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                                                                                 </svg>
+                                                                                         </button>
+                                                                                 </template>
+
+                                                                         </div>
+                                                                 </template>
+
                                                                  <!-- details -->
                                                                  <div class="text-xs text-slate-500" x-show="field.description" x-html="field.description"></div>
                                                          </div>
-
 
                                                  </div>
                                          </template>

@@ -1,46 +1,55 @@
-import Alpine from "alpinejs";
-import February from "./february";  
+import { createApp } from "vue";
+import App from "./App.vue";
+import mitt from "mitt";
 
-// start alpine js
-(function () {
-  window.Alpine = Alpine;
+const emitter = mitt();
+const FebruaryApp = createApp(App);
+FebruaryApp.config.globalProperties.emitter = emitter;
 
-  // managing router
-  Alpine.magic("router", () => {
-    const isURL = (url) => {
-      try {
-        new URL(url);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    };
+window.addEventListener("DOMContentLoaded", () => {
+  window.february = FebruaryApp.mount("[data-february]");
+});
 
-    return {
-      push(route, target = "_self") {
-        if (isURL(route)) {
-          // open route in new tab
-          window.open(route, target);
-        } else {
-          window.location.hash = route;
-        }
-      },
-      redirect(url, target = "_top") {
-        window.open(url, target);
-      },
-    };
-  });
+// // start alpine js
+// (function () {
+//   window.Alpine = Alpine;
 
-  Alpine.data("February", February);
+//   // managing router
+//   Alpine.magic("router", () => {
+//     const isURL = (url) => {
+//       try {
+//         new URL(url);
+//         return true;
+//       } catch (e) {
+//         return false;
+//       }
+//     };
 
-  Alpine.directive("log", (el, { expression }, { evaluateLater, effect }) => {
-    let getThingToLog = evaluateLater(expression);
+//     return {
+//       push(route, target = "_self") {
+//         if (isURL(route)) {
+//           // open route in new tab
+//           window.open(route, target);
+//         } else {
+//           window.location.hash = route;
+//         }
+//       },
+//       redirect(url, target = "_top") {
+//         window.open(url, target);
+//       },
+//     };
+//   });
 
-    effect(() => {
-      getThingToLog((thingToLog) => {
-        console.log(thingToLog);
-      });
-    });
-  });
-  Alpine.start();
-})(Alpine);
+//   Alpine.data("February", February);
+
+//   Alpine.directive("log", (el, { expression }, { evaluateLater, effect }) => {
+//     let getThingToLog = evaluateLater(expression);
+
+//     effect(() => {
+//       getThingToLog((thingToLog) => {
+//         console.log(thingToLog);
+//       });
+//     });
+//   });
+//   Alpine.start();
+// })(Alpine);

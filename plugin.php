@@ -3,7 +3,7 @@
  * @package     WordPress.Plugin
  * plugin name: February Demo Option Page
  * plugin URI: http://www.appdets.com/february-framework
- * description: A tiny minimal robust WordPress Option Framework made with TailwindCSS and Alpine.js
+ * description: A tiny minimal robust WordPress Option Framework made with TailwindCSS and VueJS
  * version: 1.0.0
  * author: Appdets
  * author URI: http://www.appdets.com
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) || die('No script kiddies please!');
 
 
-require_once( plugin_dir_path( __FILE__ ) . '/february/class.february.php' );
+require_once( plugin_dir_path( __FILE__ ) . '/february/february.php' );
 
 // load the plugin class
 require_once( plugin_dir_path( __FILE__ ) . '/test/dummy-options.php' );

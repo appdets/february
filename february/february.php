@@ -48,7 +48,7 @@ if (!class_exists('February')) {
                 # Input fields
                 public function input_fields()
                 {
-                        return apply_filters('february_fields', ['text', 'textarea', 'checkbox', 'multi_checkbox', 'tab', 'switch', 'multi_switch', 'radio', 'select', 'number', 'email', 'url', 'password', 'color', 'date', 'time', 'range', 'media', 'editor', 'repeater', 'css', 'js']);
+                        return apply_filters('february_fields', ['text', 'image', 'textarea', 'checkbox', 'multi_checkbox', 'tab', 'switch', 'multi_switch', 'radio', 'select', 'number', 'email', 'url', 'password', 'color', 'date', 'time', 'range', 'media', 'editor', 'repeater', 'css', 'js']);
                 }
 
                 # Initialize
@@ -141,14 +141,10 @@ if (!class_exists('February')) {
                 public function save_options($options = [])
                 {
                         $id = $this->get_id();
-                        $requested_id = $this->inputs()->id ?? '';
-
-                        if ($requested_id !== $id) {
-                                return;
-                        }
+                        $requested_id = $this->inputs()->id ?? $id ?? '';
 
                         foreach ($options as $key => $value) {
-                                update_option($id . '_' . $key, $value);
+                                update_option($requested_id . '_' . $key, $value);
                         }
                 }
 
@@ -164,8 +160,8 @@ if (!class_exists('February')) {
 
                                 $options = [];
 
-                                foreach ($rows as $row) { 
-                                        $option_name = str_replace($id . '_', '', $row->option_name); 
+                                foreach ($rows as $row) {
+                                        $option_name = str_replace($id . '_', '', $row->option_name);
                                         $options[$option_name] = maybe_unserialize($row->option_value);
                                 }
 
@@ -210,7 +206,7 @@ if (!class_exists('February')) {
 
                 # Get object scripts
                 function getOptionScript()
-                { 
+                {
                         $sections = array_map(function ($section) {
                                 $fields = array_map(function ($field) {
                                         if (isset($field['type']) && in_array($field['type'], $this->input_fields())) {
@@ -249,7 +245,10 @@ if (!class_exists('February')) {
                 # Render body
                 public function render_body()
                 {
-                        if (file_exists(__DIR__ . '/february-template.php')) include_once  __DIR__ . '/february-template.php';
+                        // if (file_exists(__DIR__ . '/february-template.php')) include_once  __DIR__ . '/february-template.php';
+?>
+                        <div data-february></div=>
+<?php
                 }
 
                 # Enqueue scripts
@@ -267,6 +266,8 @@ if (!class_exists('February')) {
 
                         wp_enqueue_style('february-style', plugins_url('february.min.css', __FILE__));
                         wp_enqueue_script('february-script', plugins_url('february.min.js', __FILE__));
+                        # wp media 
+                        wp_enqueue_media();
                 }
 
                 # Render field
@@ -286,7 +287,7 @@ if (!class_exists('February')) {
 
 
 # February get option
-if(!function_exists('fget_option')) {
+if (!function_exists('fget_option')) {
         function fget_option($name, $id = 'option')
         {
                 return February::get_option($name, $id);
@@ -294,10 +295,9 @@ if(!function_exists('fget_option')) {
 }
 
 # February get options 
-if(!function_exists('fget_options')) {
+if (!function_exists('fget_options')) {
         function fget_options($id = 'option')
         {
                 return February::get_options($id);
         }
 }
-

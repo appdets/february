@@ -150,8 +150,17 @@ $options = [
                 [
                     'id' => 'image',
                     'type' => 'image',
-                    'label' => 'image',
+                    'label' => 'Image',
                     'description' => 'A simple image field.',
+                    'default' => '',
+                ],
+                [
+                    'id' => 'gallery',
+                    'multiple' => true,
+                    'max' => 3,
+                    'type' => 'image',
+                    'label' => 'Image Gallery',
+                    'description' => 'A simple multiple image field.',
                     'default' => '',
                 ],
                 [

@@ -1,3 +1,10 @@
+<template>
+  <div>
+    
+  </div>
+</template>
+
+<script>
 import { Toast, Loading, build_options } from "./helper";
 
 const February = {
@@ -556,3 +563,5 @@ const February = {
 };
 
 export default () => February;
+
+</script>
