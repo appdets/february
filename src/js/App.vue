@@ -3,7 +3,7 @@
     <!-- February option page header  -->
     <div
       v-if="data.title || data.description"
-      class="mb-1 sm:mb-4 flex flex-col gap-1 pv-3 py-2 sm:p-0"
+      class="mb-1 sm:mb-4 flex flex-col gap-1 px-3 py-2 sm:p-0"
     >
       <h2 v-if="data.title" class="font-medium text-xl text-slate-700 m-0">
         {{ data.title }}
@@ -73,7 +73,7 @@
               href="#"
               target="_blank"
               title="A Modern, Robust but Powerful WordPress Option Framework"
-              >February Framework</a
+              >February Option Kit</a
             >
           </div>
         </nav>

@@ -105,8 +105,8 @@
       </template> -->
 
       <!-- select -->
-      <!-- <template v-if="['select'].includes(field.type)">
-       
+      <template v-if="['select'].includes(field.type)">
+        <!-- select -->
         <div
           class="flex flex-col items-center relative w-52"
           :class="[field.disabled ? 'opacity-70' : '', field.class]"
@@ -268,10 +268,10 @@
             </div>
           </template>
         </div>
-      </template> -->
+      </template>
 
       <!-- slider range -->
-      <!-- <template v-if="['range'].includes(field.type)">
+      <template v-if="['range'].includes(field.type)">
         <div
           class="flex items-center gap-2"
           :class="[field.disabled ? 'opacity-70' : '', field.class]"
@@ -305,10 +305,10 @@
             />
           </div>
         </div>
-      </template> -->
+      </template>
 
       <!-- checkbox -->
-      <!-- <template v-if="['checkbox'].includes(field.type)">
+      <template v-if="['checkbox'].includes(field.type)">
         <div>
           <label class="inline-flex items-center gap-1.5 rounded-md w-auto">
             <input
@@ -350,10 +350,10 @@
             ></span>
           </label>
         </div>
-      </template> -->
+      </template>
 
       <!-- multiple checkbox -->
-      <!-- <template v-if="['multi_checkbox'].includes(field.type)">
+      <template v-if="['multi_checkbox'].includes(field.type)">
         <div
           class="flex gap-3"
           :class="[
@@ -416,10 +416,10 @@
             </template>
           </template>
         </div>
-      </template> -->
+      </template>
 
       <!-- multiple switch -->
-      <!-- <template v-if="['multi_switch'].includes(field.type)">
+      <template v-if="['multi_switch'].includes(field.type)">
         <div
           class="flex gap-3"
           :class="[
@@ -469,10 +469,10 @@
             </label>
           </div>
         </div>
-      </template> -->
+      </template>
 
       <!-- radio -->
-      <!-- <template v-if="['radio'].includes(field.type)">
+      <template v-if="['radio'].includes(field.type)">
         <div
           class="flex gap-2"
           :class="[
@@ -520,10 +520,10 @@
             </label>
           </div>
         </div>
-      </template> -->
+      </template>
 
       <!-- switch -->
-      <!-- <template v-if="['switch'].includes(field.type)">
+      <template v-if="['switch'].includes(field.type)">
         <div
           class="flex items-center cursor-pointer gap-3"
           :class="[field.disabled ? 'opacity-70' : '', field.class]"
@@ -553,10 +553,10 @@
           </div>
           <span class="text-slate-600 text-sm" v-html="field.message"></span>
         </div>
-      </template> -->
+      </template>
 
       <!-- textarea -->
-      <!-- <template v-if="['textarea'].includes(field.type)">
+      <template v-if="['textarea'].includes(field.type)">
         <textarea
           :placeholder="field.placeholder"
           :rows="field.rows || 2"
@@ -567,10 +567,10 @@
           v-model="fields[field.id]"
           class="february-editor w-full form-input textarea"
         ></textarea>
-      </template> -->
+      </template>
 
       <!-- button group / tab  -->
-      <!-- <template v-if="['tab', 'button_group'].includes(field.type)">
+      <template v-if="['tab', 'button_group'].includes(field.type)">
         <div :class="[field.disabled ? 'opacity-70' : '', field.class]">
           <div class="inline-flex shadow-sm rounded-md">
             <template
@@ -620,17 +620,17 @@
             </template>
           </div>
         </div>
-      </template> -->
+      </template>
 
       <!-- message  -->
-      <!-- <template v-if="['message'].includes(field.type)">
+      <template v-if="['message'].includes(field.type)">
         <div
           v-show="field.html || field.message || field.text5 || field.value"
           :class="[field.class]"
           class="text-sm text-slate-600 bg-slate-100 p-3 rounded-md"
           v-text="field.html || field.message || field.text6"
         ></div>
-      </template> -->
+      </template>
 
       <!-- nohtml  -->
       <template v-if="['nohtml'].includes(field.type)">

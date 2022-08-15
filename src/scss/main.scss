@@ -6,7 +6,16 @@
   padding-left: 0 !important;
 }
 
+.wrap {
+  margin-top: 0px !important;
+}
+
 .february {
+
+  div, p, a, h1, h2, h3, h4, h5, h6, ul, ol, li, figure, figcaption, blockquote, dl, dd, dt, form, fieldset, legend, input, textarea, select, button, table, thead, tbody, tr, th, td, article, aside, footer, header, nav, section {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
   @apply sm:p-5;
 
   :focus:not(:focus-visible) {
@@ -34,7 +43,7 @@
         @apply sm:flex  flex-grow flex-col pb-4 md:pb-0 md:overflow-y-auto text-sm font-medium tracking-wide;
 
         .february-sidebar-nav-item {
-          @apply flex items-center gap-2 mb-0.5 px-4 py-3.5 text-slate-900  transition duration-150 focus:outline-none;
+          @apply flex items-center gap-2 mb-0.5 px-4 py-3.5 text-slate-900 transition duration-150 focus:outline-none font-medium;
 
           &:hover,
           &.active {

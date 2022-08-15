@@ -239,7 +239,7 @@ if (!class_exists('February')) {
                 # Filter footer
                 function filter_footer()
                 {
-                        echo __('<span id="footer-thankyou">Thank you for choosing <a href="https://wordpress.org/plugins/february-framework/" target="_blank">February Framework</a>.</span>');
+                        echo __('<span id="footer-thankyou">Thank you for choosing <a href="https://wordpress.org/plugins/february-kit/" target="_blank">February Kit</a>.</span>');
                 }
 
                 # Render body

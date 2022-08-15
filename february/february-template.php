@@ -450,4 +450,8 @@
          #wpcontent {
                  padding-left: 0 !important;
          }
+
+         .wrap {
+                 margin-top: 0px;
+         }
  </style>
