@@ -43,7 +43,7 @@
         @apply sm:flex  flex-grow flex-col pb-4 md:pb-0 md:overflow-y-auto text-sm font-medium tracking-wide;
 
         .february-sidebar-nav-item {
-          @apply flex items-center gap-2 mb-0.5 px-4 py-3.5 text-slate-900 transition duration-150 focus:outline-none font-medium;
+          @apply flex items-center gap-2 mb-0.5 px-4 py-3 text-slate-900 transition duration-150 focus:outline-none font-medium;
 
           &:hover,
           &.active {
@@ -114,12 +114,12 @@
       z-index: 9999999 !important;
       min-width: 200px;
       max-width: 350px;
-      background: rgba(30, 41, 59, 0.8);
-      @apply absolute border inline-block border-slate-100 top-6 sm:top-1/2 sm:left-7 left-1/2 -translate-x-1/2 sm:-translate-x-0 sm:-translate-y-1/2  shadow-lg px-3 py-2 rounded-md text-xs text-slate-100;
+      background: rgba(30, 41, 59, 0.99);
+      @apply absolute border inline-block border-slate-100 top-6 sm:top-1/2 sm:left-7 left-1/2 -translate-x-1/2 sm:-translate-x-0 sm:-translate-y-1/2  shadow-lg px-3 py-2 rounded-sm text-xs text-slate-100;
     }
   }
   .february-btn {
-    @apply font-medium cursor-pointer text-sm flex items-center rounded-sm justify-center gap-2 focus:outline-none px-3 py-1.5 bg-teal-600 border-b-2 shadow-sm border-teal-700 text-white hover:opacity-90 transition duration-150 disabled:opacity-50;
+    @apply font-medium cursor-pointer text-sm flex items-center rounded-sm justify-center gap-1 focus:outline-none px-3 pl-1 py-1.5 bg-teal-600 shadow-sm text-white hover:opacity-90 transition duration-150 disabled:opacity-50;
 
     &.danger {
       @apply bg-red-500 border-red-600;

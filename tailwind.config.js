@@ -4,6 +4,7 @@ module.exports = {
   content: [ 
     "./february/february-template.php", 
     "./src/js/*.js", 
+    "./src/js/component/*.vue",  
   ],
   theme: {
     extend: {},

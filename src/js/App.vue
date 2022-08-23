@@ -46,7 +46,6 @@
           class="february-sidebar-nav"
         >
           <!-- menu item  -->
-
           <a
             v-for="section in sections"
             :key="section.id"
@@ -128,7 +127,7 @@
          
          <!-- section fields  -->
 
-          <Field v-for="field in section.fields" :key="field.id" :field="field" :section="section"></Field>    
+          <f-field v-for="field in section.fields" :key="field.id" :field="field" :section="section"></f-field>    
 
           <!-- fields ends  -->
  
@@ -396,14 +395,10 @@
 
 <script>
 import { Toast, Loading } from './helper';
-import Field from "./component/field.vue";
 
 
 export default {
-  name: 'february',
-  components: {
-    Field
-  },
+  name: 'february', 
   data() {
     return {
       state: {},

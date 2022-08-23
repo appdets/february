@@ -1,55 +1,35 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import mitt from "mitt";
 
-const emitter = mitt();
+/**
+ * Create the app.
+ */
 const FebruaryApp = createApp(App);
+
+/**
+ * Component registration.
+ */
+
+import Field from "./component/field.vue";
+FebruaryApp.component("f-field", Field);
+
+import Label from "./component/label.vue";
+FebruaryApp.component("f-label", Label);
+
+import Tooltip from "./component/tooltip.vue";
+FebruaryApp.component("f-tooltip", Tooltip);
+
+/**
+ * Event emitter for the app.
+ */
+import mitt from "mitt";
+const emitter = mitt();
 FebruaryApp.config.globalProperties.emitter = emitter;
+
+/**
+ * Mount the app.
+ */
 
 window.addEventListener("DOMContentLoaded", () => {
   window.february = FebruaryApp.mount("[data-february]");
 });
-
-// // start alpine js
-// (function () {
-//   window.Alpine = Alpine;
-
-//   // managing router
-//   Alpine.magic("router", () => {
-//     const isURL = (url) => {
-//       try {
-//         new URL(url);
-//         return true;
-//       } catch (e) {
-//         return false;
-//       }
-//     };
-
-//     return {
-//       push(route, target = "_self") {
-//         if (isURL(route)) {
-//           // open route in new tab
-//           window.open(route, target);
-//         } else {
-//           window.location.hash = route;
-//         }
-//       },
-//       redirect(url, target = "_top") {
-//         window.open(url, target);
-//       },
-//     };
-//   });
-
-//   Alpine.data("February", February);
-
-//   Alpine.directive("log", (el, { expression }, { evaluateLater, effect }) => {
-//     let getThingToLog = evaluateLater(expression);
-
-//     effect(() => {
-//       getThingToLog((thingToLog) => {
-//         console.log(thingToLog);
-//       });
-//     });
-//   });
-//   Alpine.start();
-// })(Alpine);
